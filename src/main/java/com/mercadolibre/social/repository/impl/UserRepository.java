@@ -7,10 +7,9 @@ import com.mercadolibre.social.exception.NotFoundException;
 import com.mercadolibre.social.repository.IUserRepository;
 import org.springframework.stereotype.Repository;
 
-
 import java.io.FileInputStream;
 import java.io.IOException;
-
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -44,16 +43,17 @@ public class UserRepository implements IUserRepository {
 
     @Override
     public List<User> findUsersByIds(Set<Integer> ids) {
-        return users.stream()
-                .filter( user -> ids.contains(user.getId()))
-                .toList();
+        return new ArrayList<>(users.stream()
+                .filter(user -> ids.contains(user.getId()))
+                .toList());
     }
 
     private List<User> loadDataBase() throws IOException {
         String FILE_PATH = "src/main/resources/users.json";
         ObjectMapper objectMapper = new ObjectMapper();
         try (FileInputStream inputStream = new FileInputStream(FILE_PATH)) {
-            return objectMapper.readValue(inputStream, new TypeReference<List<User>>() {});
+            return objectMapper.readValue(inputStream, new TypeReference<List<User>>() {
+            });
         }
     }
 

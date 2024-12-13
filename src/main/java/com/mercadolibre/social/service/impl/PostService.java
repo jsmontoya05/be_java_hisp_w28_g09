@@ -42,7 +42,7 @@ public class PostService implements IPostService {
         post = postRepository.save(post);
 
         // Retorna el mensaje de éxito
-        return "The post with id "+ post.getId() + " has been created correctly";
+        return "The post with id " + post.getId() + " has been created correctly";
     }
 
     @Override
