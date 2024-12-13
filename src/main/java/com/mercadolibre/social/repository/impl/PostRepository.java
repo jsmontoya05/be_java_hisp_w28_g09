@@ -21,6 +21,7 @@ import java.util.List;
 @Repository
 public class PostRepository implements IPostRepository {
 
+    private static Integer nextId = 100;  // Variable estática para generar IDs únicos
     private List<Post> posts;
 
     public PostRepository() throws IOException {
@@ -34,6 +35,7 @@ public class PostRepository implements IPostRepository {
 
     @Override
     public Post save(Post post) {
+        post.setId(nextId++);
         posts.add(post);
         return post;
     }
