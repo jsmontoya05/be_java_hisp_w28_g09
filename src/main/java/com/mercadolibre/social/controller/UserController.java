@@ -17,7 +17,7 @@ public class UserController {
     }
 
     //01, Poder realizar la acción de “Follow” (seguir) a un determinado usuario
-    @PostMapping("/users/{userId}/follow/{userIdToFollow}")
+    @PostMapping("/{userId}/follow/{userIdToFollow}")
     public ResponseEntity<?> followUser(@PathVariable int userId, @PathVariable int userIdToFollow){
         return ResponseEntity.ok().body(userService.followUser(userId, userIdToFollow));
     }
