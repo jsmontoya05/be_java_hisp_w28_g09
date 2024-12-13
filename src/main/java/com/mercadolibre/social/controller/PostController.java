@@ -1,5 +1,6 @@
 package com.mercadolibre.social.controller;
 
+import com.mercadolibre.social.dto.request.PostPromotionRequestDto;
 import com.mercadolibre.social.dto.request.PostRequestDto;
 import com.mercadolibre.social.service.IPostService;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,15 @@ public class PostController {
     public ResponseEntity<?> createPost(@RequestBody PostRequestDto postRequestDTO) {
         try {
             return new ResponseEntity<>(postService.createPost(postRequestDTO), HttpStatus.OK);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Bad request: " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/products/promo-post")
+    public ResponseEntity<?> createPostPromotion(@RequestBody PostPromotionRequestDto postPromotionRequestDto) {
+        try {
+            return new ResponseEntity<>(postService.createPostPromotion(postPromotionRequestDto), HttpStatus.OK);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Bad request: " + e.getMessage());
         }
