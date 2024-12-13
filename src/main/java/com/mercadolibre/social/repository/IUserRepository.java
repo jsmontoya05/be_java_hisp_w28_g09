@@ -9,5 +9,8 @@ public interface IUserRepository {
     List<User> findAll();
     User save(User user);
     User findById(Integer id);
+
+
     List<User> findUsersByIds(Set<Integer> ids);
+
 }

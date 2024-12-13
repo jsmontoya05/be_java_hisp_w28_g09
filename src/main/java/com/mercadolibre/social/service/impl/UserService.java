@@ -1,16 +1,17 @@
 package com.mercadolibre.social.service.impl;
-
-
+import com.mercadolibre.social.dto.response.FollowUserResponseDto;
+import com.mercadolibre.social.entity.User;
+import com.mercadolibre.social.exception.ConflictException;
+import com.mercadolibre.social.exception.InvalidFormatException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mercadolibre.social.dto.response.FollowedByUserDto;
 import com.mercadolibre.social.dto.response.FollowersByUserDto;
 import com.mercadolibre.social.dto.response.UserDto;
-import com.mercadolibre.social.entity.User;
 import com.mercadolibre.social.exception.IllegalOperationException;
 import com.mercadolibre.social.repository.IUserRepository;
 import com.mercadolibre.social.service.IUserService;
 import org.springframework.stereotype.Service;
-
+import java.util.Optional;
 import java.util.List;
 
 @Service
@@ -23,6 +24,29 @@ public class UserService implements IUserService {
     }
 
     @Override
+    public FollowUserResponseDto followUser(int userId, int userIdToFollow) {
+        if (userId <= 0 || userIdToFollow <= 0) {
+            throw new InvalidFormatException("Id is invalid.");
+        }
+        User user = userRepository.findById(userId);
+        Optional<Integer> isFollowed = user.getFollowed().stream()
+                .filter(userFollowedId -> userFollowedId.equals(userIdToFollow))
+                .findFirst();
+        if (isFollowed.isPresent()) {
+            throw new ConflictException("The user is already followed.");
+        }
+        User userToFollow = userRepository.findById(userIdToFollow);
+        Optional<Integer> isFollower = userToFollow.getFollowers().stream()
+                .filter(userFollowerId -> userFollowerId.equals(userId))
+                .findFirst();
+        if (isFollower.isPresent()){
+            throw new ConflictException("The user is already follower. ");
+        }
+        user.getFollowed().add(userIdToFollow);
+        userToFollow.getFollowers().add(userId);
+        return new FollowUserResponseDto(userId, userIdToFollow);
+    }
+
     public FollowersByUserDto followersByUser(Integer id) { //Retorna el listado de seguidores de un usuario especifico
 
         User user = userRepository.findById(id);
