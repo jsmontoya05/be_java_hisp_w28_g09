@@ -43,7 +43,7 @@ public class UserRepository implements IUserRepository {
     }
 
     @Override
-    public List<User> followersByUser(Set<Integer> ids) {
+    public List<User> findUsersByIds(Set<Integer> ids) {
         return users.stream()
                 .filter( user -> ids.contains(user.getId()))
                 .toList();
