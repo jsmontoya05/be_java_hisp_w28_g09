@@ -33,4 +33,10 @@ public class UserController {
     public ResponseEntity<?> followedByUser(@PathVariable Integer userId){
         return new ResponseEntity<>(userService.followedByUser(userId), HttpStatus.OK);
     }
+
+    // 02. Obtener el resultado de la cantidad de usuarios que siguen a un determinado vendedor
+    @GetMapping("/{userId}/followers/count")
+    public ResponseEntity<?> getCountFollowers(@PathVariable int userId){
+        return new ResponseEntity<>(userService.getCountFollowers(userId), HttpStatus.OK);
+    }
 }
