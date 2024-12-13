@@ -8,5 +8,4 @@ public interface IUserRepository {
     List<User> findAll();
     User save(User user);
     User findById(Integer id);
-
 }
