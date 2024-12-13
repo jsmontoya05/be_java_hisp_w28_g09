@@ -22,9 +22,15 @@ public class UserController {
     @GetMapping("/{userId}/followers/list")
     public ResponseEntity<?> followersByUser(@PathVariable Integer userId){
         return new ResponseEntity<>(userService.followersByUser(userId), HttpStatus.OK);
-  }
+    }
+
     @PostMapping("/{userId}/unfollow/{userIdToUnfollow}")
     public ResponseEntity<?> unfollowUser(@PathVariable int userId, @PathVariable int userIdToUnfollow){
         return new ResponseEntity<>(userService.unfollowUser(userId,userIdToUnfollow), HttpStatus.OK);
+    }
+
+    @GetMapping("/{userId}/followed/list")
+    public ResponseEntity<?> followedByUser(@PathVariable Integer userId){
+        return new ResponseEntity<>(userService.followedByUser(userId), HttpStatus.OK);
     }
 }

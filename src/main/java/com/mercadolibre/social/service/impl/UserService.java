@@ -2,9 +2,9 @@ package com.mercadolibre.social.service.impl;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mercadolibre.social.dto.response.FollowedByUserDto;
 import com.mercadolibre.social.dto.response.FollowersByUserDto;
 import com.mercadolibre.social.dto.response.UserDto;
-import com.mercadolibre.social.entity.User;
 import com.mercadolibre.social.entity.User;
 import com.mercadolibre.social.exception.IllegalOperationException;
 import com.mercadolibre.social.repository.IUserRepository;
@@ -26,8 +26,7 @@ public class UserService implements IUserService {
     public FollowersByUserDto followersByUser(Integer id) { //Retorna el listado de seguidores de un usuario especifico
 
         User user = userRepository.findById(id);
-        List<User> followers = userRepository.followersByUser(user.getFollowers());
-        System.out.println(followers);
+        List<User> followers = userRepository.findUsersByIds(user.getFollowers());
 
         return new FollowersByUserDto(
                 user.getId(),
@@ -55,5 +54,23 @@ public class UserService implements IUserService {
         user.getFollowed().remove(userIdToUnfollow);
         userToUnfollow.getFollowers().remove(userId);
         return "User " + userId + " successfully unfollowed User " + userIdToUnfollow;
+    }
+
+    @Override
+    public FollowedByUserDto followedByUser(Integer id) { //Retorna el listado de los vendedores seguidos por un usuario específico
+
+        User user = userRepository.findById(id);
+        List<User> followers = userRepository.findUsersByIds(user.getFollowed());
+
+        return new FollowedByUserDto(
+                user.getId(),
+                user.getUsername(),
+                followers.stream()
+                        .map( us -> new UserDto(
+                                us.getId(),
+                                us.getUsername()
+                        ))
+                        .toList()
+        );
     }
 }
