@@ -12,6 +12,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public class UserRepository implements IUserRepository {
@@ -39,6 +40,13 @@ public class UserRepository implements IUserRepository {
                 .filter(u -> u.getId().equals(id))
                 .findFirst()
                 .orElseThrow(() -> new NotFoundException("User not found with ID: " + id));
+    }
+
+    @Override
+    public List<User> followersByUser(Set<Integer> ids) {
+        return users.stream()
+                .filter( user -> ids.contains(user.getId()))
+                .toList();
     }
 
     private List<User> loadDataBase() throws IOException {
