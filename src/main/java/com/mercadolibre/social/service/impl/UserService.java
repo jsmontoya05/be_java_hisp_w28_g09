@@ -6,6 +6,7 @@ import com.mercadolibre.social.exception.InvalidFormatException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mercadolibre.social.dto.response.FollowedByUserDto;
 import com.mercadolibre.social.dto.response.FollowersByUserDto;
+import com.mercadolibre.social.dto.response.UserCountFollowersDto;
 import com.mercadolibre.social.dto.response.UserDto;
 import com.mercadolibre.social.exception.IllegalOperationException;
 import com.mercadolibre.social.repository.IUserRepository;
@@ -96,5 +97,12 @@ public class UserService implements IUserService {
                         ))
                         .toList()
         );
+    }
+
+    @Override
+    public UserCountFollowersDto getCountFollowers(int userId) {
+        User user = userRepository.findById(userId);
+        Integer followersCount = user.getFollowers().size();
+        return new UserCountFollowersDto(String.valueOf(user.getId()),user.getUsername(),followersCount);
     }
 }
