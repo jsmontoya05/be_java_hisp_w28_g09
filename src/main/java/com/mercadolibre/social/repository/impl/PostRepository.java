@@ -7,17 +7,15 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.mercadolibre.social.entity.Post;
-import com.mercadolibre.social.entity.User;
+import com.mercadolibre.social.exception.NotFoundException;
 import com.mercadolibre.social.repository.IPostRepository;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.ResourceUtils;
 
-import java.io.File;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -27,6 +25,25 @@ public class PostRepository implements IPostRepository {
 
     public PostRepository() throws IOException {
         posts = loadDataBase();
+    }
+
+    @Override
+    public List<Post> findAll() {
+        return posts;
+    }
+
+    @Override
+    public Post save(Post post) {
+        posts.add(post);
+        return post;
+    }
+
+    @Override
+    public Post findById(Integer id) {
+        return posts.stream()
+                .filter(p -> p.getId().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new NotFoundException("Post not found with ID: " + id));
     }
 
     private List<Post> loadDataBase() throws IOException {
@@ -48,4 +65,6 @@ public class PostRepository implements IPostRepository {
             return objectMapper.readValue(inputStream, new TypeReference<List<Post>>() {});
         }
     }
+
+
 }
