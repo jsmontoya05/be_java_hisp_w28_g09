@@ -3,27 +3,36 @@ package com.mercadolibre.social.service.impl;
 import com.mercadolibre.social.dto.request.PostPromotionRequestDto;
 import com.mercadolibre.social.dto.request.PostRequestDto;
 import com.mercadolibre.social.dto.response.ProductCountPromoPostDto;
+import com.mercadolibre.social.dto.response.PostDetailsDTO;
+import com.mercadolibre.social.dto.response.ProductResponseDTO;
+import com.mercadolibre.social.dto.response.UserPostsResponseDTO;
 import com.mercadolibre.social.entity.Post;
-
+import com.mercadolibre.social.entity.Product;
 import com.mercadolibre.social.entity.User;
 import com.mercadolibre.social.exception.BadRequestException;
 import com.mercadolibre.social.repository.IPostRepository;
+import com.mercadolibre.social.repository.IProductRepository;
 import com.mercadolibre.social.repository.IUserRepository;
 import com.mercadolibre.social.service.IPostService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
+import java.util.Set;
 
 @Service
 public class PostService implements IPostService {
 
     private final IPostRepository postRepository;
     private final IUserRepository userRepository;
+    private final IProductRepository productRepository;
 
-    public PostService(IPostRepository postRepository, IUserRepository userRepository) {
+    public PostService(IPostRepository postRepository, IUserRepository userRepository, IProductRepository productRepository) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
+        this.productRepository = productRepository;
     }
 
     @Override
@@ -101,5 +110,46 @@ public class PostService implements IPostService {
         post = postRepository.save(post);
 
         return "The post with promotion with id " + post.getId() + " has been successfully created";
+    }
+
+    @Override
+    public UserPostsResponseDTO getPostsByFollowedUsers(Integer userId) {
+        // Verifica que el usuario existe
+        User user = userRepository.findById(userId);
+
+        // Obtén los IDs de los usuarios seguidos
+        Set<Integer> followedUsers = user.getFollowed();
+
+        // Filtra las publicaciones realizadas por los usuarios seguidos
+        List<Post> filteredPosts = postRepository.findAll().stream()
+                .filter(post -> followedUsers.contains(post.getUserId()))
+                .filter(post -> post.getDate().isAfter(LocalDate.now().minusWeeks(2))) // Últimas dos semanas
+                .sorted(Comparator.comparing(Post::getDate).reversed()) // Orden descendente por fecha
+                .toList();
+
+        // Mapea las publicaciones a PostDetailsDTO
+        List<PostDetailsDTO> posts = filteredPosts.stream()
+                .map(post -> {
+                    Product product = productRepository.findById(post.getProductId());
+                    return new PostDetailsDTO(
+                            post.getUserId(),
+                            post.getId(),
+                            post.getDate(),
+                            new ProductResponseDTO(
+                                    product.getId(),
+                                    product.getName(),
+                                    product.getType(),
+                                    product.getBrand(),
+                                    product.getColor(),
+                                    product.getNotes()
+                            ),
+                            post.getCategory(),
+                            post.getPrice()
+                    );
+                })
+                .toList();
+
+        // Construye la respuesta completa
+        return new UserPostsResponseDTO(userId, posts);
     }
 }
