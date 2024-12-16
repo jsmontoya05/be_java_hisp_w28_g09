@@ -7,6 +7,7 @@ import com.mercadolibre.social.dto.response.UserPostsResponseDTO;
 import com.mercadolibre.social.entity.Post;
 
 
+
 public interface IPostService {
     String createPost(PostRequestDto postRequestDTO);
 

@@ -11,7 +11,6 @@ import com.mercadolibre.social.exception.NotFoundException;
 import com.mercadolibre.social.repository.IPostRepository;
 import org.springframework.stereotype.Repository;
 
-
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -64,7 +63,8 @@ public class PostRepository implements IPostRepository {
         objectMapper.registerModule(module);
 
         try (FileInputStream inputStream = new FileInputStream(FILE_PATH)) {
-            return objectMapper.readValue(inputStream, new TypeReference<List<Post>>() {});
+            return objectMapper.readValue(inputStream, new TypeReference<List<Post>>() {
+            });
         }
     }
 

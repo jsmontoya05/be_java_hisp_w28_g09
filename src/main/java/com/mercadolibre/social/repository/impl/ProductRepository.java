@@ -42,7 +42,8 @@ public class ProductRepository implements IProductRepository {
         String FILE_PATH = "src/main/resources/products.json";
         ObjectMapper objectMapper = new ObjectMapper();
         try (FileInputStream inputStream = new FileInputStream(FILE_PATH)) {
-            return objectMapper.readValue(inputStream, new TypeReference<List<Product>>() {});
+            return objectMapper.readValue(inputStream, new TypeReference<List<Product>>() {
+            });
         }
     }
 
