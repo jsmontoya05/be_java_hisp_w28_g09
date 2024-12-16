@@ -1,5 +1,33 @@
 # API Documentation
 
+## Problema
+Las redes sociales actuales no ofrecen una experiencia optimizada para la interacción entre vendedores y compradores en un entorno estructurado. Los usuarios tienen dificultades para seguir las actividades de los vendedores, organizar sus publicaciones y obtener información relevante de manera eficiente.
+
+## Solución
+Crear una aplicación que permita a los usuarios realizar acciones clave, como seguir o dejar de seguir a vendedores, gestionar publicaciones de productos (incluyendo promociones) y acceder a estadísticas detalladas de sus interacciones. Además, ofrecer opciones de filtrado y ordenamiento para mejorar la experiencia de usuario.
+
+## Tecnologías Utilizadas
+
+- **IntelliJ IDEA:** Entorno de desarrollo integrado (IDE) altamente potente y versátil desarrollado por JetBrains. Ofrece herramientas avanzadas para la creación, depuración y gestión de proyectos Java, facilitando el desarrollo de software con una interfaz intuitiva y funciones inteligentes.
+
+- **Java 21:** Lenguaje de programación versátil y robusto que forma la base del desarrollo de la API.
+
+- **Spring Boot 3.4.0:** Framework que simplifica el desarrollo de aplicaciones Java, proporcionando configuraciones predeterminadas y una estructura fácil de usar.
+
+- **Maven:** Herramienta de automatización de compilación y gestión de dependencias que facilita el desarrollo y la gestión del proyecto.
+
+- **Spring Web:** Módulos de Spring que permiten el desarrollo de aplicaciones web de manera eficiente.
+
+- **Git y GitHub:** Herramientas de control de versiones y plataforma de alojamiento que facilitan la colaboración y el seguimiento del desarrollo del proyecto.
+
+- **Postman:** Plataforma para el desarrollo y prueba de API's, facilitando la validación de endpoints y la interacción con la API.
+
+## Diagrama de Clases
+
+El **Diagrama de Clases** representa las clases y las relaciones entre ellas en el sistema. Muestra la estructura estática del sistema, incluyendo las clases, sus atributos, métodos y cómo se relacionan. Este diagrama proporciona una visión general de la arquitectura y la organización de clases en el código fuente.
+
+![Diagrama de Clases](/src/main/resources/static/Sprint%20N°%201.png)
+
 ## Bonus
 
 ### 12. Historia de Usuario
