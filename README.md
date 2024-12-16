@@ -1,5 +1,11 @@
 # API Documentation
 
+# SocialMeli
+
+Mercado Libre sigue creciendo, y para el próximo año tiene como objetivo implementar una serie de herramientas que mejoren la experiencia tanto de compradores como de vendedores, creando un lazo más cercano entre ellos.
+
+**SocialMeli** es la solución que permitirá a los compradores seguir a sus vendedores favoritos y estar al tanto de todas las novedades que estos publiquen. Esta herramienta busca transformar la experiencia de compra en Mercado Libre, brindando una interacción más directa y personalizada entre ambos actores.
+
 ## Endpoints
 
 ### 01. Follow a User
