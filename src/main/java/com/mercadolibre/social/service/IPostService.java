@@ -15,5 +15,6 @@ public interface IPostService {
 
     String createPostPromotion(PostPromotionRequestDto postPromotionRequestDto);
 
-    UserPostsResponseDTO getPostsByFollowedUsers(Integer userId);
+    UserPostsResponseDTO getPostsByFollowedUsers(Integer userId, String order);
+
 }
