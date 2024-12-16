@@ -1,5 +1,12 @@
 # API Documentation
 
+## Bonus
+
+### 12. Historia de Usuario
+
+**Como** usuario de la API, **quiero** buscar y filtrar productos basados en atributos como `category`, `price`, `hasPromo` y `discount`, **para** encontrar fácilmente los productos que cumplan con mis criterios específicos. El buscador debe permitir filtros combinados y ordenamiento por precio o descuento.
+
+
 ## Endpoints
 
 ### 01. Follow a User
