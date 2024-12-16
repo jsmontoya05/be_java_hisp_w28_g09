@@ -10,6 +10,7 @@ import com.mercadolibre.social.entity.Post;
 import com.mercadolibre.social.entity.Product;
 import com.mercadolibre.social.entity.User;
 import com.mercadolibre.social.exception.BadRequestException;
+import com.mercadolibre.social.exception.NotFoundException;
 import com.mercadolibre.social.repository.IPostRepository;
 import com.mercadolibre.social.repository.IProductRepository;
 import com.mercadolibre.social.repository.IUserRepository;
@@ -20,6 +21,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
+import java.util.Objects;
 import java.util.ListResourceBundle;
 import java.util.Set;
 
@@ -40,8 +42,28 @@ public class PostService implements IPostService {
     public String createPost(PostRequestDto postRequestDTO) {
         LocalDate date = postRequestDTO.getDate();
 
-        //Se valida si el usuario ingresado existe en el sistema
+        // Se valida si el usuario ingresado existe en el sistema
         userRepository.findById(postRequestDTO.getUserId());
+
+        // Se valida que el producto ingresado sea correcto
+        Product product = productRepository.findById(postRequestDTO.getProduct().getProductId());
+
+        if (!product.getName().equalsIgnoreCase(postRequestDTO.getProduct().getProductName())) {
+            throw new BadRequestException("The product name is incorrect");
+        }
+        if (!product.getType().equalsIgnoreCase(postRequestDTO.getProduct().getType())) {
+            throw new BadRequestException("The product type is incorrect");
+        }
+        if (!product.getBrand().equalsIgnoreCase(postRequestDTO.getProduct().getBrand())) {
+            throw new BadRequestException("The product brand is incorrect");
+        }
+        if (!product.getColor().equalsIgnoreCase(postRequestDTO.getProduct().getColor())) {
+            throw new BadRequestException("The product color is incorrect");
+        }
+        if (!product.getNotes().equalsIgnoreCase(postRequestDTO.getProduct().getNotes())) {
+            throw new BadRequestException("The product notes are incorrect");
+        }
+
         // Crea el objeto Post
         Post post = new Post();
         post.setUserId(postRequestDTO.getUserId());
@@ -91,10 +113,36 @@ public class PostService implements IPostService {
 
         userRepository.findById(postPromotionRequestDto.getUserId());
 
+        // Se valida que el producto ingresado sea correcto
+        Product product = productRepository.findById(postPromotionRequestDto.getProduct().getProductId());
+
         // Validación del descuento: debe estar entre 0 y 1 (porcentaje entre 0% y 100%)
         if (postPromotionRequestDto.getHasPromo() != null && postPromotionRequestDto.getHasPromo() &&
                 (postPromotionRequestDto.getDiscount() == null || postPromotionRequestDto.getDiscount() < 0 || postPromotionRequestDto.getDiscount() > 1)) {
             throw new BadRequestException("The discount must be between 0 and 1");
+        }
+
+        if (!product.getName().equalsIgnoreCase(postPromotionRequestDto.getProduct().getProductName())) {
+            throw new BadRequestException("The product name is incorrect");
+        }
+        if (!product.getType().equalsIgnoreCase(postPromotionRequestDto.getProduct().getType())) {
+            throw new BadRequestException("The product type is incorrect");
+        }
+        if (!product.getBrand().equalsIgnoreCase(postPromotionRequestDto.getProduct().getBrand())) {
+            throw new BadRequestException("The product brand is incorrect");
+        }
+        if (!product.getColor().equalsIgnoreCase(postPromotionRequestDto.getProduct().getColor())) {
+            throw new BadRequestException("The product color is incorrect");
+        }
+        if (!Objects.equals(product.getNotes(), postPromotionRequestDto.getProduct().getNotes())) {
+            throw new BadRequestException("The product notes are incorrect");
+        }
+        // Validar que los demás campos tengan valores válidos
+        if (postPromotionRequestDto.getPrice() == null || postPromotionRequestDto.getPrice() <= 0) {
+            throw new BadRequestException("Invalid price value");
+        }
+        if (postPromotionRequestDto.getCategory() == null || postPromotionRequestDto.getCategory() <= 0) {
+            throw new BadRequestException("Invalid category value");
         }
 
         // Crea el objeto Post
