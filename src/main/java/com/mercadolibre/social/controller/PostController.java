@@ -40,4 +40,8 @@ public class PostController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Bad request: " + e.getMessage());
         }
     }
+    @GetMapping("/products/followed/{userId}/list")
+    public ResponseEntity<?> getPostsByFollowedUsers(@PathVariable Integer userId) {
+        return new ResponseEntity<>(postService.getPostsByFollowedUsers(userId), HttpStatus.OK);
+    }
 }
