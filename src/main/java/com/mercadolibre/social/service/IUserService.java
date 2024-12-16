@@ -9,8 +9,12 @@ import com.mercadolibre.social.dto.response.UserCountFollowersDto;
 
 public interface IUserService {
     FollowUserResponseDto followUser(int userId, int userIdToFollow);
-    FollowersByUserDto followersByUser(Integer id);
+
+    FollowersByUserDto followersByUser(Integer id, String order);
+
     String unfollowUser(int userId, int userIdToUnfollow);
-    FollowedByUserDto followedByUser(Integer id);
+
+    FollowedByUserDto followedByUser(Integer id, String order);
+
     UserCountFollowersDto getCountFollowers(int userId);
 }

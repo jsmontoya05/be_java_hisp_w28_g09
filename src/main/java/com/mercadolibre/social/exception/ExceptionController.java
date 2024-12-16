@@ -16,13 +16,13 @@ public class ExceptionController {
     }
 
     @ExceptionHandler(InvalidFormatException.class)
-    public ResponseEntity<?> invalidFormat(InvalidFormatException e){
+    public ResponseEntity<?> invalidFormat(InvalidFormatException e) {
         ExceptionDto exceptionDto = new ExceptionDto(e.getMessage());
         return new ResponseEntity<>(exceptionDto, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(ConflictException.class)
-    public ResponseEntity<?> conflict(ConflictException e){
+    public ResponseEntity<?> conflict(ConflictException e) {
         ExceptionDto exceptionDto = new ExceptionDto(e.getMessage());
         return new ResponseEntity<>(exceptionDto, HttpStatus.CONFLICT);
     }

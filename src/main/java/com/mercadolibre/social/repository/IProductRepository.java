@@ -6,6 +6,8 @@ import java.util.List;
 
 public interface IProductRepository {
     List<Product> findAll();
+
     Product save(Product product);
+
     Product findById(Integer id);
 }

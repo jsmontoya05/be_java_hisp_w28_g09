@@ -25,6 +25,13 @@ public class PostController {
         }
     }
 
+
+    // 11. Obtener la cantidad de productos en promoción de un determinado vendedor ?user_id={userId}
+    @GetMapping("/products/promo-post/count")
+    public ResponseEntity<?> getCountPromoPost(@RequestParam("user_id") int userId){
+        return new ResponseEntity<>(postService.getCountPromoPost(userId), HttpStatus.OK);
+    }
+
     @PostMapping("/products/promo-post")
     public ResponseEntity<?> createPostPromotion(@RequestBody PostPromotionRequestDto postPromotionRequestDto) {
         try {

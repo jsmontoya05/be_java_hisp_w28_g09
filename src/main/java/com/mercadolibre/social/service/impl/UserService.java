@@ -1,19 +1,18 @@
 package com.mercadolibre.social.service.impl;
-import com.mercadolibre.social.dto.response.FollowUserResponseDto;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mercadolibre.social.dto.response.*;
 import com.mercadolibre.social.entity.User;
 import com.mercadolibre.social.exception.ConflictException;
-import com.mercadolibre.social.exception.InvalidFormatException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mercadolibre.social.dto.response.FollowedByUserDto;
-import com.mercadolibre.social.dto.response.FollowersByUserDto;
-import com.mercadolibre.social.dto.response.UserCountFollowersDto;
-import com.mercadolibre.social.dto.response.UserDto;
 import com.mercadolibre.social.exception.IllegalOperationException;
+import com.mercadolibre.social.exception.InvalidFormatException;
 import com.mercadolibre.social.repository.IUserRepository;
 import com.mercadolibre.social.service.IUserService;
 import org.springframework.stereotype.Service;
-import java.util.Optional;
+
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService implements IUserService {
@@ -40,7 +39,7 @@ public class UserService implements IUserService {
         Optional<Integer> isFollower = userToFollow.getFollowers().stream()
                 .filter(userFollowerId -> userFollowerId.equals(userId))
                 .findFirst();
-        if (isFollower.isPresent()){
+        if (isFollower.isPresent()) {
             throw new ConflictException("The user is already follower. ");
         }
         user.getFollowed().add(userIdToFollow);
@@ -48,16 +47,18 @@ public class UserService implements IUserService {
         return new FollowUserResponseDto(userId, userIdToFollow);
     }
 
-    public FollowersByUserDto followersByUser(Integer id) { //Retorna el listado de seguidores de un usuario especifico
+    @Override
+    public FollowersByUserDto followersByUser(Integer id, String order) { //Retorna el listado de seguidores de un usuario especifico
 
         User user = userRepository.findById(id);
         List<User> followers = userRepository.findUsersByIds(user.getFollowers());
+        orderByUserName(followers, order);
 
         return new FollowersByUserDto(
                 user.getId(),
                 user.getUsername(),
                 followers.stream()
-                        .map( us -> new UserDto(
+                        .map(us -> new UserDto(
                                 us.getId(),
                                 us.getUsername()
                         ))
@@ -82,16 +83,17 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public FollowedByUserDto followedByUser(Integer id) { //Retorna el listado de los vendedores seguidos por un usuario específico
+    public FollowedByUserDto followedByUser(Integer id, String order) { //Retorna el listado de los vendedores seguidos por un usuario específico
 
         User user = userRepository.findById(id);
-        List<User> followers = userRepository.findUsersByIds(user.getFollowed());
+        List<User> followed = userRepository.findUsersByIds(user.getFollowed());
+        orderByUserName(followed, order);
 
         return new FollowedByUserDto(
                 user.getId(),
                 user.getUsername(),
-                followers.stream()
-                        .map( us -> new UserDto(
+                followed.stream()
+                        .map(us -> new UserDto(
                                 us.getId(),
                                 us.getUsername()
                         ))
@@ -103,6 +105,15 @@ public class UserService implements IUserService {
     public UserCountFollowersDto getCountFollowers(int userId) {
         User user = userRepository.findById(userId);
         Integer followersCount = user.getFollowers().size();
-        return new UserCountFollowersDto(String.valueOf(user.getId()),user.getUsername(),followersCount);
+        return new UserCountFollowersDto(String.valueOf(user.getId()), user.getUsername(), followersCount);
+    }
+
+
+    private void orderByUserName(List<User> users, String order) {
+        if (order.equalsIgnoreCase("name_desc")) {
+            users.sort(Comparator.comparing(User::getUsername).reversed());
+        } else {
+            users.sort(Comparator.comparing(User::getUsername));
+        }
     }
 }

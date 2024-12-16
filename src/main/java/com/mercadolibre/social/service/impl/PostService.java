@@ -2,6 +2,7 @@ package com.mercadolibre.social.service.impl;
 
 import com.mercadolibre.social.dto.request.PostPromotionRequestDto;
 import com.mercadolibre.social.dto.request.PostRequestDto;
+import com.mercadolibre.social.dto.response.ProductCountPromoPostDto;
 import com.mercadolibre.social.dto.response.PostDetailsDTO;
 import com.mercadolibre.social.dto.response.ProductResponseDTO;
 import com.mercadolibre.social.dto.response.UserPostsResponseDTO;
@@ -16,9 +17,9 @@ import com.mercadolibre.social.service.IPostService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
-import java.util.List;
 import java.util.ListResourceBundle;
 import java.util.Set;
 
@@ -55,10 +56,36 @@ public class PostService implements IPostService {
         post = postRepository.save(post);
 
         // Retorna el mensaje de éxito
-        return "The post with id "+ post.getId() + " has been created correctly";
+        return "The post with id " + post.getId() + " has been created correctly";
     }
 
     @Override
+    public ProductCountPromoPostDto getCountPromoPost(int userId) {
+        // TODOS LOS POST
+        List<Post> posts = postRepository.findAll();
+
+        // FILTRAR POR USUARIO
+        List<Post> postsFilterByUser = posts.stream()
+                .filter(post -> post.getUserId().equals(userId))
+                .toList();
+
+        // FILTRAR LOS POST QUE TENGA PROMO
+        List<Post> postFilterByUserAndPromoPost = postsFilterByUser.stream().
+                filter(Post::getHasPromo)
+                .toList();
+
+        // CONTAR LOS POST QUE TENGA PROMO
+        Integer countPromoPost = postFilterByUserAndPromoPost.size();
+
+        // CONSEGUIR EL USERNAME O EL USUARIO POR EL ID
+        User user = userRepository.findById(userId);
+
+        // ARMAR LA RESPUESTA EN EL FORMATO DTO
+        return new ProductCountPromoPostDto(
+                user.getId(), user.getUsername(), countPromoPost
+        );
+    }
+
     public String createPostPromotion(PostPromotionRequestDto postPromotionRequestDto) {
         Integer userId = postPromotionRequestDto.getUserId();
 
@@ -140,5 +167,4 @@ public class PostService implements IPostService {
         // Construye la respuesta completa
         return new UserPostsResponseDTO(userId, posts);
     }
-
 }

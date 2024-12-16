@@ -8,9 +8,11 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserDto {
+public class ProductCountPromoPostDto {
     @JsonProperty("user_id")
     private Integer userId;
     @JsonProperty("user_name")
     private String userName;
+    @JsonProperty("promo_products_count")
+    private Integer promoProductsCount;
 }
