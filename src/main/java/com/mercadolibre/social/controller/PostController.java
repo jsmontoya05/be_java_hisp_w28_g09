@@ -5,9 +5,7 @@ import com.mercadolibre.social.dto.request.PostRequestDto;
 import com.mercadolibre.social.service.IPostService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class PostController {
@@ -34,5 +32,9 @@ public class PostController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Bad request: " + e.getMessage());
         }
+    }
+    @GetMapping("/products/followed/{userId}/list")
+    public ResponseEntity<?> getPostsByFollowedUsers(@PathVariable Integer userId) {
+        return new ResponseEntity<>(postService.getPostsByFollowedUsers(userId), HttpStatus.OK);
     }
 }
