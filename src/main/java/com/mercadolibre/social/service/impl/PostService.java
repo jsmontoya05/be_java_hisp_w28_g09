@@ -19,6 +19,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
+import java.util.ListResourceBundle;
 import java.util.Set;
 
 @Service
@@ -86,7 +87,7 @@ public class PostService implements IPostService {
     }
 
     @Override
-    public UserPostsResponseDTO getPostsByFollowedUsers(Integer userId) {
+    public UserPostsResponseDTO getPostsByFollowedUsers(Integer userId, String order) {
         // Verifica que el usuario existe
         User user = userRepository.findById(userId);
 
@@ -97,11 +98,25 @@ public class PostService implements IPostService {
         List<Post> filteredPosts = postRepository.findAll().stream()
                 .filter(post -> followedUsers.contains(post.getUserId()))
                 .filter(post -> post.getDate().isAfter(LocalDate.now().minusWeeks(2))) // Últimas dos semanas
-                .sorted(Comparator.comparing(Post::getDate).reversed()) // Orden descendente por fecha
                 .toList();
 
+        List<Post> orderedPosts;
+
+        if(order.equalsIgnoreCase("date_asc")) {
+            orderedPosts = filteredPosts
+                    .stream()
+                    .sorted(Comparator.comparing(Post::getDate))
+                    .toList();
+        } else { // date_desc
+            orderedPosts = filteredPosts
+                    .stream()
+                    .sorted(Comparator.comparing(Post::getDate).reversed())
+                    .toList();
+        }
+
+
         // Mapea las publicaciones a PostDetailsDTO
-        List<PostDetailsDTO> posts = filteredPosts.stream()
+        List<PostDetailsDTO> posts = orderedPosts.stream()
                 .map(post -> {
                     Product product = productRepository.findById(post.getProductId());
                     return new PostDetailsDTO(
