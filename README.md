@@ -39,123 +39,293 @@ El **Diagrama de Clases** representa las clases y las relaciones entre ellas en 
 
 ## Endpoints
 
-### 01. Follow a User
-- **Method:** POST
-- **URL:** `http://localhost:8080/users/1/follow/9`
-
+### US 0001: Poder realizar la acción de "Follow" (seguir) a un determinado vendedor
+**Responsables:** `Karina - Bryan`
+**Método**: `POST`
+**Ruta**: `/users/{userId}/follow/{userIdToFollow}`
+**Ejemplo**: `/users/123/follow/234`
+#### Respuestas
+- **200 OK**: bodyless o DTO.
+- **400 Bad Request**: bodyless o DTO.
+#### Parámetros
+| Parámetro      | Tipo | Descripción                       |
+|----------------|------|-----------------------------------|
+| `userId`       | int  | Número que identifica al usuario actual |
+| `userIdToFollow` | int  | Número que identifica al usuario a seguir |
 ---
-
-### 02. Get Follower Count
-- **Method:** GET
-- **URL:** `http://localhost:8080/users/1/followers/count`
-
----
-
-### 03. List Followers of a Seller
-- **Method:** GET
-- **URL:** `http://localhost:8080/users/1/followers/list`
-
----
-
-### 04. List Followed Sellers by a User
-- **Method:** GET
-- **URL:** `http://localhost:8080/users/1/followed/list`
-
----
-
-### 05. Create a New Post
-- **Method:** POST
-- **URL:** `http://localhost:8080/products/post`
-- **Body:**
+### US 0002: Obtener el resultado de la cantidad de usuarios que siguen a un determinado vendedor
+**Responsables:** `Karina - Bryan`
+**Método**: `GET`
+**Ruta**: `/users/{userId}/followers/count`
+**Ejemplo**: `/users/234/followers/count`
+#### Respuesta
 ```json
 {
-    "user_id": 1,
-    "date": "29-04-2025",
-    "product": {
+  "user_id": 234,
+  "user_name": "vendedor1",
+  "followers_count": 35
+}
+```
+#### Parámetros
+| Parámetro | Tipo | Descripción                       |
+|-----------|------|-----------------------------------|
+| `userId`  | int  | Número que identifica al usuario  |
+---
+### US 0003: Obtener un listado de todos los usuarios que siguen a un determinado vendedor (¿Quién me sigue?)
+**Responsables:** `Santiago Montoya - Eilin Dianella`
+**Método**: `GET`
+**Ruta**: `/users/{userId}/followers/list`
+**Ejemplo**: `/users/234/followers/list`
+#### Respuesta
+```json
+{
+  "user_id": 234,
+  "user_name": "vendedor1",
+  "followers": [
+    {
+      "user_id": 4698,
+      "user_name": "usuario1"
+    },
+    {
+      "user_id": 1536,
+      "user_name": "usuario2"
+    },
+    {
+      "user_id": 2236,
+      "user_name": "usuario3"
+    }
+  ]
+}
+```
+#### Parámetros
+| Parámetro | Tipo | Descripción                       |
+|-----------|------|-----------------------------------|
+| `userId`  | int  | Número que identifica al usuario  |
+---
+### US 0004: Obtener un listado de todos los vendedores a los cuales sigue un determinado usuario (¿A quién sigo?)
+**Responsables:** `Santiago Montoya - Eilin Dianella`
+**Método**: `GET`
+**Ruta**: `/users/{userId}/followed/list`
+**Ejemplo**: `/users/4698/followed/list`
+#### Respuesta
+```json
+{
+  "user_id": 4698,
+  "user_name": "usuario1",
+  "followed": [
+    {
+      "user_id": 234,
+      "user_name": "vendedor1"
+    },
+    {
+      "user_id": 6932,
+      "user_name": "vendedor2"
+    },
+    {
+      "user_id": 6631,
+      "user_name": "vendedor3"
+    }
+  ]
+}
+```
+#### Parámetros
+| Parámetro | Tipo | Descripción                       |
+|-----------|------|-----------------------------------|
+| `userId`  | int  | Número que identifica al usuario  |
+---
+### US 0005: Dar de alta una nueva publicación
+**Responsables:** `Santiago Mariño - Gianluca`
+**Método**: `POST`
+**Ruta**: `/products/post`
+#### Payload
+```json
+{
+  "user_id": 123,
+  "date": "29-04-2021",
+  "product": {
+    "product_id": 1,
+    "product_name": "Silla Gamer",
+    "type": "Gamer",
+    "brand": "Racer",
+    "color": "Red & Black",
+    "notes": "Special Edition"
+  },
+  "category": 100,
+  "price": 1500.50
+}
+```
+#### Respuestas
+- **200 OK**
+- **400 Bad Request**
+#### Parámetros
+| Parámetro       | Tipo       | Descripción                             |
+|-----------------|------------|-----------------------------------------|
+| `user_id`       | int        | Número que identifica al usuario        |
+| `date`          | LocalDate  | Fecha en formato `dd-MM-yyyy`           |
+| `product_id`    | int        | ID del producto asociado                |
+| `product_name`  | String     | Nombre del producto                     |
+| `type`          | String     | Tipo del producto                       |
+| `brand`         | String     | Marca del producto                      |
+| `color`         | String     | Color del producto                      |
+| `notes`         | String     | Notas u observaciones del producto      |
+| `category`      | int        | ID de la categoría                      |
+| `price`         | double     | Precio del producto                     |
+
+
+
+
+### US 0006: Obtener un listado de las publicaciones realizadas por los vendedores que un usuario sigue en las últimas dos semanas
+**Responsables:** `Santiago Mariño - Gianluca`
+**Método**: `GET`
+**Ruta**: `/products/followed/{userId}/list`
+**Ejemplo**: `/products/followed/4698/list`
+#### Respuesta
+```json
+{
+  "user_id": 4698,
+  "posts": [
+    {
+      "user_id": 123,
+      "post_id": 32,
+      "date": "01-05-2021",
+      "product": {
+        "product_id": 62,
+        "product_name": "Headset RGB Inalámbrico",
+        "type": "Gamer",
+        "brand": "Razer",
+        "color": "Green with RGB",
+        "notes": "Sin Batería"
+      },
+      "category": 120,
+      "price": 2800.69
+    },
+    {
+      "user_id": 234,
+      "post_id": 18,
+      "date": "29-04-2021",
+      "product": {
         "product_id": 1,
-        "product_name": "Silla Gamer",
+        "productName": "Silla Gamer",
         "type": "Gamer",
         "brand": "Racer",
         "color": "Red & Black",
         "notes": "Special Edition"
-    },
-    "category": 100,
-    "price": 1500.50
+      },
+      "category": 100,
+      "price": 15000.50
+    }
+  ]
 }
 ```
+#### Parámetros
+| Parámetro | Tipo | Descripción                       |
+|-----------|------|-----------------------------------|
+| `userId`  | int  | Número que identifica al usuario  |
 
+### US 0007: Poder realizar la acción de "Unfollow" (dejar de seguir) a un determinado vendedor
+**Responsables:** `Santiago Mariño - Gianluca`
+**Método**: `POST`
+**Ruta**: `/users/{userId}/unfollow/{userIdToUnfollow}`
+**Ejemplo**: `/users/234/unfollow/123`
+#### Respuestas
+- **200 OK**: bodyless o DTO.
+- **400 Bad Request**: bodyless o DTO.
+#### Parámetros
+| Parámetro          | Tipo | Descripción                              |
+|------------------|------|----------------------------------|
+| `userId`        | int  | Número que identifica al usuario actual |
+| `userIdToUnfollow` | int  | Número que identifica al usuario a dejar de seguir |
 ---
-
-### 06. Get Recent Posts by Followed Sellers
-- **Method:** GET
-- **URL:** `http://localhost:8080/products/followed/1/list`
-
+### US 0008: Ordenamiento alfabético ascendente y descendente
+**Responsables:** `Santiago Montoya - Eilin Dianella`
+**Método**: `GET`
+**Rutas Ejemplo**:
+- `/users/{UserID}/followers/list?order=name_asc`
+- `/users/{UserID}/followers/list?order=name_desc`
+- `/users/{UserID}/followed/list?order=name_asc`
+- `/users/{UserID}/followed/list?order=name_desc`
+#### Descripción de `order`
+| Orden       | Descripción                  |
+|-------------|-----------------------------|
+| `name_asc`  | Alfabético ascendente       |
+| `name_desc` | Alfabético descendente      |
+> *Nota: Este ordenamiento aplica solo para US 0003 y US 0004.*
 ---
-
-### 07. Unfollow a Seller
-- **Method:** POST
-- **URL:** `http://localhost:8080/users/1/unfollow/4`
-
+### US 0009: Ordenamiento por fecha ascendente y descendente
+**Responsables:** `Santiago Mariño - Gianluca`
+**Método**: `GET`
+**Rutas Ejemplo**:
+- `/products/followed/{userId}/list?order=date_asc`
+- `/products/followed/{userId}/list?order=date_desc`
+#### Descripción de `order`
+| Orden       | Descripción                               |
+|-------------|------------------------------------------|
+| `date_asc`  | Fecha ascendente (de más antigua a más nueva) |
+| `date_desc` | Fecha descendente (de más nueva a más antigua) |
+> *Nota: Este ordenamiento aplica solo para la US 0006.*
 ---
-
-### 08. Followers Sorting Options
-#### 08.1 Ascending Order by Name
-- **Method:** GET
-- **URL:** `http://localhost:8080/users/1/followers/list?order=name_asc`
-
-#### 08.2 Descending Order by Name
-- **Method:** GET
-- **URL:** `http://localhost:8080/users/1/followers/list?order=name_desc`
-
-#### 08.3 Ascending Order of Followed Sellers by Name
-- **Method:** GET
-- **URL:** `http://localhost:8080/users/1/followed/list?order=name_asc`
-
-#### 08.4 Descending Order of Followed Sellers by Name
-- **Method:** GET
-- **URL:** `http://localhost:8080/users/1/followed/list?order=name_desc`
-
----
-
-### 09. Post Sorting Options
-#### 09.1 Ascending Order by Date
-- **Method:** GET
-- **URL:** `http://localhost:8080/products/followed/1/list?order=date_asc`
-
-#### 09.2 Descending Order by Date
-- **Method:** GET
-- **URL:** `http://localhost:8080/products/followed/1/list?order=date_desc`
-
----
-
-### 10. Create a Promotional Post
-- **Method:** POST
-- **URL:** `http://localhost:8080/products/promo-post`
-- **Body:**
+### US 0010: Llevar a cabo la publicación de un nuevo producto en promoción
+**Responsables:** `Gianluca`
+**Método**: `POST`
+**Ruta**: `/products/promo-post`
+#### Payload
 ```json
 {
-    "user_id": 1,
-    "date": "29-04-2021",
-    "product": {
-        "product_id": 1,
-        "product_name": "Silla Gamer",
-        "type": "Gamer",
-        "brand": "Racer",
-        "color": "Red & Black",
-        "notes": "Special Edition"
-    },
-    "category": 100,
-    "price": 1500.50,
-    "has_promo": true,
-    "discount": 0.25
+  "user_id": 234,
+  "date": "29-04-2021",
+  "product": {
+    "product_id": 1,
+    "product_name": "Silla Gamer",
+    "type": "Gamer",
+    "brand": "Racer",
+    "color": "Red & Black",
+    "notes": "Special Edition"
+  },
+  "category": 100,
+  "price": 1500.50,
+  "has_promo": true,
+  "discount": 0.25
 }
 ```
-
+#### Respuestas
+- **200 OK**
+- **400 Bad Request**
+#### Parámetros
+| Parámetro       | Tipo       | Descripción                             |
+|-----------------|------------|-----------------------------------------|
+| `user_id`       | int        | Número que identifica al usuario        |
+| `date`          | LocalDate  | Fecha en formato `dd-MM-yyyy`           |
+| `product_id`    | int        | ID del producto asociado                |
+| `product_name`  | String     | Nombre del producto                     |
+| `type`          | String     | Tipo del producto                       |
+| `brand`         | String     | Marca del producto                      |
+| `color`         | String     | Color del producto                      |
+| `notes`         | String     | Notas u observaciones del producto      |
+| `category`      | int        | ID de la categoría                      |
+| `price`         | double     | Precio del producto                     |
+| `has_promo`     | boolean    | Campo `true` o `false` para promoción    |
+| `discount`      | double     | Monto de descuento si está en promoción  |
+---
+### US 0011: Obtener la cantidad de productos en promoción de un determinado vendedor
+**Responsables:** `Karina - Bryan`
+**Método**: `GET`
+**Ruta**: `/products/promo-post/count?user_id={userId}`
+#### Respuesta
+```json
+{
+  "user_id": 234,
+  "user_name": "vendedor1",
+  "promo_products_count": 23
+}
+```
+#### Parámetros
+| Parámetro            | Tipo    | Descripción                                |
+|----------------------|---------|------------------------------------------|
+| `user_id`           | int     | Número que identifica al usuario          |
+| `user_name`         | String  | Nombre del usuario                        |
+| `promo_products_count` | int     | Cantidad de productos en promoción          |
 ---
 
-### 11. Get Promotional Product Count by Seller
-- **Method:** GET
-- **URL:** `http://localhost:8080/products/promo-post/count?user_id=1`
 
 ## Integrantes
 
