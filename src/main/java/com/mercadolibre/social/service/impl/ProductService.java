@@ -7,6 +7,7 @@ import com.mercadolibre.social.dto.response.ProductCountPromoPostDto;
 import com.mercadolibre.social.dto.response.ProductResponseDTO;
 import com.mercadolibre.social.entity.Post;
 import com.mercadolibre.social.entity.Product;
+import com.mercadolibre.social.exception.BadRequestException;
 import com.mercadolibre.social.repository.IPostRepository;
 import com.mercadolibre.social.repository.IProductRepository;
 import com.mercadolibre.social.service.IProductService;
@@ -29,15 +30,12 @@ public class ProductService implements IProductService {
 
 
     @Override
-    public List<PostDetailsDTO> search(String query) {
+    public List<PostDetailsDTO> search(String query, String rangePrice) {
         List<PostDetailsDTO> postFilteredByQuery = new ArrayList<>();
-        ObjectMapper mapper = new ObjectMapper();
         // Se busca los productos que contenga la query en el nombre, notes, ...
         List<Product> products = productRepository.findProductsByQuery(query);
         // Se recorren los productos encontrados para buscar los post relacionados
-        products.stream().forEach(product -> {
-                    System.out.println("PRODUCTO --> " + product.getName());
-                    System.out.println("========POST===========");
+        products.forEach(product -> {
                     // se busca los post relacionados al producto
                     List<Post> posts = postRepository.findByProductId(product.getId());
                     // Se recorren los post encontrados para agregarlos a la lista de postFilteredByQuery
@@ -60,11 +58,21 @@ public class ProductService implements IProductService {
                                         )
                                 )
                             );
-                    System.out.println("================");
 
                 }
 
         );
+        if (!rangePrice.isEmpty()){
+            try {
+                String[] range = rangePrice.split("-");
+                double minPrice = Double.parseDouble(range[0]);
+                double maxPrice = Double.parseDouble(range[1]);
+                return postFilteredByQuery.stream()
+                        .filter(post -> post.getPrice() >= minPrice && post.getPrice() <= maxPrice).toList();
+            } catch (Exception e){
+                throw new BadRequestException("No se puede aplicar el filtro de precio");
+            }
+        }
         return postFilteredByQuery;
     }
 }

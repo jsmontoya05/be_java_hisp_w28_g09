@@ -19,8 +19,8 @@ public class ProductController {
     }
 
     @GetMapping("")
-    public ResponseEntity<?> search(@RequestParam("search") String query){
-        return new ResponseEntity<>(productService.search(query), HttpStatus.OK);
+    public ResponseEntity<?> search(@RequestParam("search") String query, @RequestParam(value = "range_price", defaultValue = "") String rangePrice){
+        return new ResponseEntity<>(productService.search(query, rangePrice), HttpStatus.OK);
     }
 
 }

@@ -41,13 +41,12 @@ public class ProductRepository implements IProductRepository {
     @Override
     public List<Product> findProductsByQuery(String query) {
         if (query == null || query.trim().isEmpty()) {
-            return List.copyOf(products); // Retorna todos los productos si la consulta es vacía o nula
+            return List.copyOf(products);
         }
-
-        return products.stream().filter(product ->{
-                   return (product.getName() != null && product.getName().trim().toLowerCase().contains(query.toLowerCase()));
-        }
-
+        return products.stream().filter(product ->
+                    (product.getName() != null && product.getName().trim().toLowerCase().contains(query.toLowerCase())
+                   || (product.getNotes() != null && product.getNotes().trim().toLowerCase().contains(query.toLowerCase()))
+                            || (product.getBrand() != null && product.getBrand().trim().toLowerCase().contains(query.toLowerCase())))
         ).toList();
     }
 
