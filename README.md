@@ -30,12 +30,95 @@ El **Diagrama de Clases** representa las clases y las relaciones entre ellas en 
 
 ![Diagrama de Clases](/src/main/resources/static/Sprint%20N°%201.png)
 
-## Bonus
-
-### 12. Historia de Usuario
-
-**Como** usuario de la API, **quiero** buscar y filtrar productos basados en atributos como `category`, `price`, `hasPromo` y `discount`, **para** encontrar fácilmente los productos que cumplan con mis criterios específicos. El buscador debe permitir filtros combinados y ordenamiento por precio o descuento.
-
+# **Guía de Ejecución y Pruebas de la API** :rocket::rocket::rocket:
+## **1. Ejecución de la API**
+### **1.1 Ejecución Local**
+La aplicación está desarrollada con **Spring Boot 3.4.0** y utiliza **Java 21** junto con **Maven** como herramienta de gestión de dependencias. Para ejecutar la API localmente:
+#### **Pasos**
+1. Abre una terminal en el directorio donde se encuentra el archivo `pom.xml`.
+2. Ejecuta los siguientes comandos:
+```bash
+mvn clean install
+mvn spring-boot:run
+```
+3. La aplicación se iniciará en el puerto **8080** por defecto.
+4. Para verificar que la API está corriendo, accede a la siguiente URL en un navegador o herramienta de prueba:
+```
+http://localhost:8080
+```
+### **1.2 Ejecución como JAR**
+Si prefieres generar el archivo JAR y ejecutarlo manualmente, sigue estos pasos:
+#### **Pasos**
+1. Genera el archivo `.jar`:
+```bash
+mvn package
+```
+2. El JAR se generará en la carpeta `target/`. Ejecuta el JAR con:
+```bash
+java -jar target/social-0.0.1-SNAPSHOT.jar
+```
+3. La API estará disponible en:
+```
+http://localhost:8080
+```
+---
+## **2. Pruebas de la API**
+Las pruebas funcionales de la API se realizan mediante **Postman**, ya que aún no hemos cubierto pruebas automatizadas en el curso.
+### **2.1 Colección de Postman**
+La colección de Postman, que contiene todas las solicitudes necesarias para probar la API, está ubicada en el siguiente directorio del proyecto:
+```
+src/main/resources/postman/SocialMeli.postman_collection.json
+```
+### **2.2 Importar la colección en Postman**
+#### **Pasos**
+1. Abre **Postman** en tu equipo.
+2. Haz clic en el botón **Importar** en la parte superior izquierda.
+3. Selecciona la opción **Upload Files** y busca la siguiente ruta en tu proyecto:
+```
+src/main/resources/postman/SocialMeli.postman_collection.json
+```
+4. Una vez importada, verás la colección **"SocialMeli"** en la sección de **Collections**.
+5. Configura las variables necesarias si las hay (p.ej., `{{host}} = http://localhost:8080`).
+6. Ejecuta cada solicitud según sea necesario para probar los endpoints.
+---
+## **3. Dependencias Importantes**
+A continuación, se detallan las dependencias clave utilizadas en el proyecto junto con sus versiones:
+- **Spring Boot Starter Web**: Proporciona funcionalidades esenciales para crear APIs REST.
+  ```xml
+  <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+      <version>3.4.0</version>
+  </dependency>
+  ```
+- **Spring Boot DevTools**: Facilita el desarrollo con reinicio automático y herramientas adicionales.
+  ```xml
+  <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-devtools</artifactId>
+      <version>3.4.0</version>
+      <scope>runtime</scope>
+      <optional>true</optional>
+  </dependency>
+  ```
+- **Lombok**: Reduce el código repetitivo al generar getters, setters y constructores automáticamente.
+  ```xml
+  <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <version>1.18.30</version>
+      <optional>true</optional>
+  </dependency>
+  ```
+- **Spring Boot Starter Test**: Incluye herramientas de prueba como JUnit y Mockito.
+  ```xml
+  <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <version>3.4.0</version>
+      <scope>test</scope>
+  </dependency>
+  ```
 
 ## Endpoints
 
@@ -326,7 +409,10 @@ El **Diagrama de Clases** representa las clases y las relaciones entre ellas en 
 | `promo_products_count` | int     | Cantidad de productos en promoción          |
 ---
 
-### US 0012 BONUS: Search 
+## Bonus
+
+### US 0012: Search 
+Buscar y filtrar productos basados en atributos como `category`, `price`, `hasPromo` y `discount`, **para** encontrar fácilmente los productos que cumplan con mis criterios específicos. El buscador debe permitir filtros combinados y ordenamiento por precio o descuento.
 **Responsables:** `Todo el equipo`
 **Método**: `GET`
 **Ruta**: `/products?search={query}&range_price={min_price}-{max_price}`
@@ -369,7 +455,7 @@ El **Diagrama de Clases** representa las clases y las relaciones entre ellas en 
 | Parámetro            | Tipo    | Descripción                                |
 |----------------------|---------|------------------------------------------|
 | `query`           | String     | Query por el que se quiere buscar          |
-| `rangePrice`         | String  | Rango de precio para filtrar productos     |
+| `rangePrice`         | String  | Rango de precio para filtrar productos donde se pasan dos valores numericos separados por un guion     |
 ---
 
 
