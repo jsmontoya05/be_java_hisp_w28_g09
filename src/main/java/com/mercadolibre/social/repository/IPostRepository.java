@@ -10,4 +10,6 @@ public interface IPostRepository {
     Post save(Post post);
 
     Post findById(Integer id);
+
+    List<Post> findByProductId(Integer id);
 }

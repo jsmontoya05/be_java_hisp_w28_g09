@@ -18,4 +18,9 @@ public class ProductController {
         this.productService = productService;
     }
 
+    @GetMapping("")
+    public ResponseEntity<?> search(@RequestParam("search") String query){
+        return new ResponseEntity<>(productService.search(query), HttpStatus.OK);
+    }
+
 }

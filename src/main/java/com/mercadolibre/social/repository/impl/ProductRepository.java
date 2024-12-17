@@ -38,6 +38,19 @@ public class ProductRepository implements IProductRepository {
                 .orElseThrow(() -> new NotFoundException("Product not found with ID: " + id));
     }
 
+    @Override
+    public List<Product> findProductsByQuery(String query) {
+        if (query == null || query.trim().isEmpty()) {
+            return List.copyOf(products); // Retorna todos los productos si la consulta es vacía o nula
+        }
+
+        return products.stream().filter(product ->{
+                   return (product.getName() != null && product.getName().trim().toLowerCase().contains(query.toLowerCase()));
+        }
+
+        ).toList();
+    }
+
     private List<Product> loadDataBase() throws IOException {
         String FILE_PATH = "src/main/resources/products.json";
         ObjectMapper objectMapper = new ObjectMapper();
