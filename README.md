@@ -326,6 +326,52 @@ El **Diagrama de Clases** representa las clases y las relaciones entre ellas en 
 | `promo_products_count` | int     | Cantidad de productos en promoción          |
 ---
 
+### US 0012 BONUS: Search 
+**Responsables:** `Todo el equipo`
+**Método**: `GET`
+**Ruta**: `/products?search={query}&range_price={min_price}-{max_price}`
+#### Respuesta
+```json
+[
+    {
+        "date": "01-11-2024",
+        "product": {
+            "type": "Electronics",
+            "brand": "Dell",
+            "color": "Silver",
+            "notes": "High performance, ultra-portable laptop.",
+            "product_id": 1,
+            "product_name": "Laptop Dell XPS 13"
+        },
+        "category": 1,
+        "price": 1200.0,
+        "user_id": 1,
+        "post_id": 1
+    },
+    {
+        "date": "05-12-2024",
+        "product": {
+            "type": "Electronics",
+            "brand": "Dell",
+            "color": "Silver",
+            "notes": "High performance, ultra-portable laptop.",
+            "product_id": 1,
+            "product_name": "Laptop Dell XPS 13"
+        },
+        "category": 1,
+        "price": 1200.0,
+        "user_id": 2,
+        "post_id": 12
+    }
+]
+```
+#### Parámetros
+| Parámetro            | Tipo    | Descripción                                |
+|----------------------|---------|------------------------------------------|
+| `query`           | String     | Query por el que se quiere buscar          |
+| `rangePrice`         | String  | Rango de precio para filtrar productos     |
+---
+
 
 ## Integrantes
 
