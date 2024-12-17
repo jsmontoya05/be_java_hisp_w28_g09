@@ -18,11 +18,7 @@ public class PostController {
 
     @PostMapping("products/post")
     public ResponseEntity<?> createPost(@RequestBody PostRequestDto postRequestDTO) {
-        try {
-            return new ResponseEntity<>(postService.createPost(postRequestDTO), HttpStatus.OK);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
+        return new ResponseEntity<>(postService.createPost(postRequestDTO), HttpStatus.OK);
     }
 
 
@@ -34,11 +30,7 @@ public class PostController {
 
     @PostMapping("/products/promo-post")
     public ResponseEntity<?> createPostPromotion(@RequestBody PostPromotionRequestDto postPromotionRequestDto) {
-        try {
-            return new ResponseEntity<>(postService.createPostPromotion(postPromotionRequestDto), HttpStatus.OK);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
+        return new ResponseEntity<>(postService.createPostPromotion(postPromotionRequestDto), HttpStatus.OK);
     }
     @GetMapping("/products/followed/{userId}/list")
     public ResponseEntity<?> getPostsByFollowedUsers(@PathVariable Integer userId,

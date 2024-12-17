@@ -66,7 +66,7 @@ public class UserService implements IUserService {
         );
     }
 
-    public String unfollowUser(int userId, int userIdToUnfollow) {
+    public MessageDto unfollowUser(int userId, int userIdToUnfollow) {
         // Busca los usuarios correspondientes
         User user = userRepository.findById(userId);
         User userToUnfollow = userRepository.findById(userIdToUnfollow);
@@ -79,7 +79,7 @@ public class UserService implements IUserService {
         // Realiza las actualizaciones en las listas
         user.getFollowed().remove(userIdToUnfollow);
         userToUnfollow.getFollowers().remove(userId);
-        return "User " + userId + " successfully unfollowed User " + userIdToUnfollow;
+        return new MessageDto("User " + userId + " successfully unfollowed User " + userIdToUnfollow);
     }
 
     @Override
