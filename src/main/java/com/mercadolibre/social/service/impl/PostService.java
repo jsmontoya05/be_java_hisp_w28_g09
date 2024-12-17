@@ -2,10 +2,7 @@ package com.mercadolibre.social.service.impl;
 
 import com.mercadolibre.social.dto.request.PostPromotionRequestDto;
 import com.mercadolibre.social.dto.request.PostRequestDto;
-import com.mercadolibre.social.dto.response.ProductCountPromoPostDto;
-import com.mercadolibre.social.dto.response.PostDetailsDTO;
-import com.mercadolibre.social.dto.response.ProductResponseDTO;
-import com.mercadolibre.social.dto.response.UserPostsResponseDTO;
+import com.mercadolibre.social.dto.response.*;
 import com.mercadolibre.social.entity.Post;
 import com.mercadolibre.social.entity.Product;
 import com.mercadolibre.social.entity.User;
@@ -39,7 +36,7 @@ public class PostService implements IPostService {
     }
 
     @Override
-    public String createPost(PostRequestDto postRequestDTO) {
+    public MessageDto createPost(PostRequestDto postRequestDTO) {
         LocalDate date = postRequestDTO.getDate();
 
         // Se valida si el usuario ingresado existe en el sistema
@@ -78,7 +75,7 @@ public class PostService implements IPostService {
         post = postRepository.save(post);
 
         // Retorna el mensaje de éxito
-        return "The post with id " + post.getId() + " has been created correctly";
+        return new MessageDto("The post with id " + post.getId() + " has been created correctly");
     }
 
     @Override
@@ -108,7 +105,7 @@ public class PostService implements IPostService {
         );
     }
 
-    public String createPostPromotion(PostPromotionRequestDto postPromotionRequestDto) {
+    public MessageDto createPostPromotion(PostPromotionRequestDto postPromotionRequestDto) {
         Integer userId = postPromotionRequestDto.getUserId();
 
         userRepository.findById(postPromotionRequestDto.getUserId());
@@ -158,7 +155,7 @@ public class PostService implements IPostService {
 
         post = postRepository.save(post);
 
-        return "The post with promotion with id " + post.getId() + " has been successfully created";
+        return new MessageDto("The post with promotion with id " + post.getId() + " has been successfully created");
     }
 
     @Override
