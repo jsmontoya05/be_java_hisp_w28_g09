@@ -1,7 +1,9 @@
-# API Documentation
+# SocialMeli
 
-## Problema
+## Descripción del problema
 Las redes sociales actuales no ofrecen una experiencia optimizada para la interacción entre vendedores y compradores en un entorno estructurado. Los usuarios tienen dificultades para seguir las actividades de los vendedores, organizar sus publicaciones y obtener información relevante de manera eficiente.
+
+## Definiciones de Equipo
 
 ## Solución
 Crear una aplicación que permita a los usuarios realizar acciones clave, como seguir o dejar de seguir a vendedores, gestionar publicaciones de productos (incluyendo promociones) y acceder a estadísticas detalladas de sus interacciones. Además, ofrecer opciones de filtrado y ordenamiento para mejorar la experiencia de usuario.
@@ -154,3 +156,14 @@ El **Diagrama de Clases** representa las clases y las relaciones entre ellas en 
 ### 11. Get Promotional Product Count by Seller
 - **Method:** GET
 - **URL:** `http://localhost:8080/products/promo-post/count?user_id=1`
+
+## Integrantes
+
+| Integrante                | País      |
+|--------------------------|-----------|
+| Santiago Marino          | Argentina 🇦🇷 |
+| Gianluca Panigatti      | Argentina 🇦🇷 |
+| Eilin Dianella Restrepo  | Colombia 🇨🇴  |
+| Santiago Montoya         | Colombia 🇨🇴  |
+| Bryan Felipe Munoz       | Colombia 🇨🇴  |
+| Karina Sierra            | Colombia 🇨🇴  |
