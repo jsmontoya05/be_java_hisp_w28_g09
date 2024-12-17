@@ -47,6 +47,11 @@ public class PostRepository implements IPostRepository {
                 .orElseThrow(() -> new NotFoundException("Post not found with ID: " + id));
     }
 
+    @Override
+    public List<Post> findByProductId(Integer id) {
+        return posts.stream().filter(post -> post.getProductId().equals(id)).toList();
+    }
+
     private List<Post> loadDataBase() throws IOException {
         String FILE_PATH = "src/main/resources/posts.json";
         ObjectMapper objectMapper = new ObjectMapper();

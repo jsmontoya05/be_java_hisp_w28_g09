@@ -10,4 +10,6 @@ public interface IProductRepository {
     Product save(Product product);
 
     Product findById(Integer id);
+
+    List<Product> findProductsByQuery(String query);
 }
