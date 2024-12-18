@@ -413,9 +413,11 @@ A continuación, se detallan las dependencias clave utilizadas en el proyecto ju
 
 ### US 0012: Search 
 Buscar y filtrar productos basados en atributos como `category`, `price`, `hasPromo` y `discount`, **para** encontrar fácilmente los productos que cumplan con mis criterios específicos. El buscador debe permitir filtros combinados y ordenamiento por precio o descuento.
+
 **Responsables:** `Todo el equipo`
 **Método**: `GET`
 **Ruta**: `/products?search={query}&range_price={min_price}-{max_price}`
+
 #### Respuesta
 ```json
 [
@@ -463,7 +465,7 @@ Buscar y filtrar productos basados en atributos como `category`, `price`, `hasPr
 
 | Integrante                | País      |
 |--------------------------|-----------|
-| Santiago Marino          | Argentina 🇦🇷 |
+| Santiago Mariño          | Argentina 🇦🇷 |
 | Gianluca Panigatti      | Argentina 🇦🇷 |
 | Eilin Dianella Restrepo  | Colombia 🇨🇴  |
 | Santiago Montoya         | Colombia 🇨🇴  |
