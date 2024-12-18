@@ -11,7 +11,6 @@ import com.mercadolibre.social.exception.NotFoundException;
 import com.mercadolibre.social.repository.IPostRepository;
 import org.springframework.stereotype.Repository;
 
-
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -21,6 +20,7 @@ import java.util.List;
 @Repository
 public class PostRepository implements IPostRepository {
 
+    private static Integer nextId = 100;  // Variable estática para generar IDs únicos
     private List<Post> posts;
 
     public PostRepository() throws IOException {
@@ -34,6 +34,7 @@ public class PostRepository implements IPostRepository {
 
     @Override
     public Post save(Post post) {
+        post.setId(nextId++);
         posts.add(post);
         return post;
     }
@@ -44,6 +45,11 @@ public class PostRepository implements IPostRepository {
                 .filter(p -> p.getId().equals(id))
                 .findFirst()
                 .orElseThrow(() -> new NotFoundException("Post not found with ID: " + id));
+    }
+
+    @Override
+    public List<Post> findByProductId(Integer id) {
+        return posts.stream().filter(post -> post.getProductId().equals(id)).toList();
     }
 
     private List<Post> loadDataBase() throws IOException {
@@ -62,7 +68,8 @@ public class PostRepository implements IPostRepository {
         objectMapper.registerModule(module);
 
         try (FileInputStream inputStream = new FileInputStream(FILE_PATH)) {
-            return objectMapper.readValue(inputStream, new TypeReference<List<Post>>() {});
+            return objectMapper.readValue(inputStream, new TypeReference<List<Post>>() {
+            });
         }
     }
 
