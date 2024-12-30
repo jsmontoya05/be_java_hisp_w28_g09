@@ -10,9 +10,8 @@ import com.mercadolibre.social.entity.Post;
 import com.mercadolibre.social.exception.NotFoundException;
 import com.mercadolibre.social.repository.IPostRepository;
 import org.springframework.stereotype.Repository;
-
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -53,7 +52,6 @@ public class PostRepository implements IPostRepository {
     }
 
     private List<Post> loadDataBase() throws IOException {
-        String FILE_PATH = "src/main/resources/posts.json";
         ObjectMapper objectMapper = new ObjectMapper();
         SimpleModule module = new SimpleModule();
         module.addDeserializer(LocalDate.class, new JsonDeserializer<LocalDate>() {
@@ -67,11 +65,12 @@ public class PostRepository implements IPostRepository {
 
         objectMapper.registerModule(module);
 
-        try (FileInputStream inputStream = new FileInputStream(FILE_PATH)) {
+        try (InputStream inputStream = getClass().getResourceAsStream("/posts.json")) {
+            if (inputStream == null) {
+                throw new IOException("El archivo JSON no se encontró: " + "/posts.json");
+            }
             return objectMapper.readValue(inputStream, new TypeReference<List<Post>>() {
             });
         }
     }
-
-
 }

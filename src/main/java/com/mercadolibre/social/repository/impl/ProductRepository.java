@@ -6,9 +6,8 @@ import com.mercadolibre.social.entity.Product;
 import com.mercadolibre.social.exception.NotFoundException;
 import com.mercadolibre.social.repository.IProductRepository;
 import org.springframework.stereotype.Repository;
-
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 @Repository
@@ -51,9 +50,11 @@ public class ProductRepository implements IProductRepository {
     }
 
     private List<Product> loadDataBase() throws IOException {
-        String FILE_PATH = "src/main/resources/products.json";
         ObjectMapper objectMapper = new ObjectMapper();
-        try (FileInputStream inputStream = new FileInputStream(FILE_PATH)) {
+        try (InputStream inputStream = getClass().getResourceAsStream("/products.json")) {
+            if (inputStream == null){
+                throw new IOException("El archivo JSON no se encontró: " + "/products.json");
+            }
             return objectMapper.readValue(inputStream, new TypeReference<List<Product>>() {
             });
         }
