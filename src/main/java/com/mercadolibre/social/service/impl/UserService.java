@@ -25,9 +25,6 @@ public class UserService implements IUserService {
 
     @Override
     public FollowUserResponseDto followUser(int userId, int userIdToFollow) {
-        if (userId <= 0 || userIdToFollow <= 0) {
-            throw new InvalidFormatException("Id is invalid.");
-        }
         User user = userRepository.findById(userId);
         Optional<Integer> isFollowed = user.getFollowed().stream()
                 .filter(userFollowedId -> userFollowedId.equals(userIdToFollow))
