@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "username": "john_doe_test",
+    "followed": [3],
+    "followers": []
+  },
+  {
+    "id": 2,
+    "username": "alice_smith_test",
+    "followed": [3],
+    "followers": []
+  },
+  {
+    "id": 3,
+    "username": "bob_jones",
+    "followed": [],
+    "followers": [2,1]
+  }
+]
