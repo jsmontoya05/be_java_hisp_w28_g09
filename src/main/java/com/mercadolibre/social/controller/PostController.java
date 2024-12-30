@@ -3,6 +3,7 @@ package com.mercadolibre.social.controller;
 import com.mercadolibre.social.dto.request.PostPromotionRequestDto;
 import com.mercadolibre.social.dto.request.PostRequestDto;
 import com.mercadolibre.social.service.IPostService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,10 +18,9 @@ public class PostController {
     }
 
     @PostMapping("products/post")
-    public ResponseEntity<?> createPost(@RequestBody PostRequestDto postRequestDTO) {
+    public ResponseEntity<?> createPost(@RequestBody @Valid PostRequestDto postRequestDTO) {
         return new ResponseEntity<>(postService.createPost(postRequestDTO), HttpStatus.OK);
     }
-
 
     // 11. Obtener la cantidad de productos en promoción de un determinado vendedor ?user_id={userId}
     @GetMapping("/products/promo-post/count")
@@ -29,7 +29,7 @@ public class PostController {
     }
 
     @PostMapping("/products/promo-post")
-    public ResponseEntity<?> createPostPromotion(@RequestBody PostPromotionRequestDto postPromotionRequestDto) {
+    public ResponseEntity<?> createPostPromotion(@RequestBody @Valid PostPromotionRequestDto postPromotionRequestDto) {
         return new ResponseEntity<>(postService.createPostPromotion(postPromotionRequestDto), HttpStatus.OK);
     }
     @GetMapping("/products/followed/{userId}/list")
