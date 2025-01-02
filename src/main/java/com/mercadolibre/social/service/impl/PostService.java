@@ -120,25 +120,24 @@ public class PostService implements IPostService {
                 .filter(post -> post.getDate().isAfter(LocalDate.now().minusWeeks(2))) // Últimas dos semanas
                 .toList();
 
-        List<Post> orderedPosts;
 
-        if(order.equalsIgnoreCase("date_asc")) {
-            orderedPosts = filteredPosts
-                    .stream()
-                    .sorted(Comparator.comparing(Post::getDate))
-                    .toList();
-        } else if(order.equalsIgnoreCase("date_desc")) {
-            orderedPosts = filteredPosts
-                    .stream()
-                    .sorted(Comparator.comparing(Post::getDate).reversed())
-                    .toList();
-        } else {
-            throw new BadRequestException("Parametro no valido, debe ingresar 'name_desc' o 'name_asc' para que sea valido");
+        if (order != null) {
+            if(order.equalsIgnoreCase("date_asc")) {
+                filteredPosts
+                        .stream()
+                        .sorted(Comparator.comparing(Post::getDate));
+            } else if(order.equalsIgnoreCase("date_desc")) {
+                filteredPosts
+                        .stream()
+                        .sorted(Comparator.comparing(Post::getDate).reversed());
+            } else {
+                throw new BadRequestException("Parametro no valido, debe ingresar 'name_desc' o 'name_asc' para que sea valido");
+            }
         }
 
 
         // Mapea las publicaciones a PostDetailsDTO
-        List<PostDetailsDTO> posts = orderedPosts.stream()
+        List<PostDetailsDTO> posts = filteredPosts.stream()
                 .map(post -> {
                     Product product = productRepository.findById(post.getProductId());
                     return new PostDetailsDTO(
