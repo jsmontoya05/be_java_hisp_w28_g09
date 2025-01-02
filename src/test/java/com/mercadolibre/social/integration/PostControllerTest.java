@@ -35,7 +35,7 @@ class PostControllerTest {
     @Test
     @DisplayName("IT-08 -> US-10 Llevar a cabo la publicación de un nuevo producto en promoción")
     public void givenPostPromotionRequestDto_whenPostPromotion_thenSuccess() throws Exception {
-        //ARRANGE
+        // ARRANGE
         LocalDate currentDate = LocalDate.now();
 
         MessageDto messageDto = new MessageDto("The post with promotion with id 100 has been successfully created");
@@ -58,7 +58,7 @@ class PostControllerTest {
         ResultMatcher statusEsperado = status().isOk();
         ResultMatcher contentTypeEsperado = content().contentType("application/json");
         ResultMatcher bodyEsperado = content().json(objectMapper.writeValueAsString(messageDto));
-//      ACT & ASSERT
+        // ACT & ASSERT
         mockMvc.perform(post("/products/promo-post")
                         .contentType("application/json")
                         .content(objectMapper.writeValueAsString(postPromotionRequestDto))) // Usar ObjectMapper configurado
