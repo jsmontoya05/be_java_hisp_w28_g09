@@ -127,11 +127,13 @@ public class PostService implements IPostService {
                     .stream()
                     .sorted(Comparator.comparing(Post::getDate))
                     .toList();
-        } else { // date_desc
+        } else if(order.equalsIgnoreCase("date_desc")) {
             orderedPosts = filteredPosts
                     .stream()
                     .sorted(Comparator.comparing(Post::getDate).reversed())
                     .toList();
+        } else {
+            throw new BadRequestException("Parametro no valido, debe ingresar 'name_desc' o 'name_asc' para que sea valido");
         }
 
 
