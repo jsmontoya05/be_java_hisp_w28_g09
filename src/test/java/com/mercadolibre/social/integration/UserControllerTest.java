@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultMatcher;
 
@@ -26,6 +27,25 @@ class UserControllerTest {
     MockMvc mockMvc;
 
     ObjectMapper objectMapper = new ObjectMapper();
+
+
+    @Test
+    @DisplayName("IT-05 -> US-02: Obtener el resultado de la cantidad de usuarios que siguen a un determinado vendedor")
+    void givenUserId_whenGetCountFollowers_thenReturnCorrectFollowersCount() throws Exception{
+        // ARRANGE
+        int userId = 3;
+        UserCountFollowersDto response = new UserCountFollowersDto(String.valueOf(userId), "bob_jones", 2);
+
+        ResultMatcher expectedStatus = status().isOk();
+        ResultMatcher expectedContentType = content().contentType(MediaType.APPLICATION_JSON);
+        ResultMatcher expectedBody = content().json(objectMapper.writeValueAsString(response));
+
+        // ACT & ASSERT
+        mockMvc.perform(get("/users/{userId}/followers/count", userId))
+                .andExpectAll(expectedStatus, expectedContentType, expectedBody)
+                .andDo(print());
+
+    }
 
     @Test
     @DisplayName("Carga de JSON segun el contexto.")
