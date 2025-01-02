@@ -22,7 +22,7 @@ public class UserController {
     }
 
     @GetMapping("/{userId}/followers/list")
-    public ResponseEntity<?> followersByUser(@PathVariable Integer userId, @RequestParam(value = "order", defaultValue = "name_asc") String order) {
+    public ResponseEntity<?> followersByUser(@PathVariable Integer userId, @RequestParam(value = "order", required = false) String order) {
         return new ResponseEntity<>(userService.followersByUser(userId, order), HttpStatus.OK);
     }
 
@@ -32,7 +32,7 @@ public class UserController {
     }
 
     @GetMapping("/{userId}/followed/list")
-    public ResponseEntity<?> followedByUser(@PathVariable Integer userId, @RequestParam(value = "order", defaultValue = "name_asc") String order) {
+    public ResponseEntity<?> followedByUser(@PathVariable Integer userId, @RequestParam(value = "order", required = false) String order) {
         return new ResponseEntity<>(userService.followedByUser(userId, order), HttpStatus.OK);
     }
 
