@@ -48,12 +48,13 @@ class UserControllerTest {
     @Test
     @DisplayName("IT-02 -> US-03: Obtener un listado de todos los usuarios que siguen a un determinado vendedor")
     public void givenUser_whenGetFollowers_thenReturnCorrectFollowersList() throws Exception {
+        //ARRANGE
         Integer parametroEntrada = 3;
         FollowersByUserDto bodyEsperadoDTO = new FollowersByUserDto(3, "bob_jones", List.of(new UserDto(1,"john_doe_test"), new UserDto(2,"alice_smith_test")));
         ResultMatcher statusEsperado = status().isOk();
         ResultMatcher contentTypeEsperado = content().contentType("application/json");
         ResultMatcher bodyEsperado = content().json(objectMapper.writeValueAsString(bodyEsperadoDTO));
-
+        // ACT & ASSERT
         mockMvc.perform(get("/users/{parametroEntrada}/followers/list", parametroEntrada))
                 .andExpect(statusEsperado)
                 .andExpect(contentTypeEsperado)
