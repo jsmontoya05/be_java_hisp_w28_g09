@@ -6,9 +6,8 @@ import com.mercadolibre.social.entity.User;
 import com.mercadolibre.social.exception.NotFoundException;
 import com.mercadolibre.social.repository.IUserRepository;
 import org.springframework.stereotype.Repository;
-
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -49,9 +48,11 @@ public class UserRepository implements IUserRepository {
     }
 
     private List<User> loadDataBase() throws IOException {
-        String FILE_PATH = "src/main/resources/users.json";
         ObjectMapper objectMapper = new ObjectMapper();
-        try (FileInputStream inputStream = new FileInputStream(FILE_PATH)) {
+        try (InputStream inputStream = getClass().getResourceAsStream("/users.json")) {
+            if (inputStream == null){
+                throw new IOException("El archivo JSON no se encontró: " + "/users.json");
+            }
             return objectMapper.readValue(inputStream, new TypeReference<List<User>>() {
             });
         }
