@@ -458,6 +458,29 @@ Buscar y filtrar productos basados en atributos como `category`, `price`, `hasPr
 | `rangePrice`         | String  | Rango de precio para filtrar productos donde se pasan dos valores numericos separados por un guion     |
 ---
 
+## Validaciones
+Se realizan las siguientes validaciones para los parámetros de las solicitudes:
+
+| Dato/Parámetro   | ¿Obligatorio? | Validación                                                                                                                                                                   | Mensaje de error                                                                                                                                                            |
+|------------------|---------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `user_id`        | SI            | <ul> <li>Que el campo no esté vacío.</li> <li> Mayor 0 </li> </ul>                                                                                                           | <ul> <li> El  id no puede estar vacío. </li> <li> El id debe ser mayor a cero. </li> </ul>                                                                                  |
+| `date`           | SI            | <ul> <li> Que el campo no esté vacío. </li> </ul>                                                                                                                            | <ul> <li> La fecha no puede estar vacía. </li> </ul>                                                                                                                        |
+| `product_id`     | SI            | <ul> <li>Que el campo no esté vacío.</li> <li> Mayor 0 </li> </ul>                                                                                                           | <ul> <li> La id no puede estar vacía. </li> <li> El id debe ser mayor a cero </li> </ul>                                                                                    |
+| `product_name`   | SI            | <ul> <li>Que el campo no esté vacío.</li> <li> Longitud máxima de 40 caracteres. </li> <li> Que no posea caracteres especiales (%, &, $, etc), permite espacios. </li> </ul> | <ul> <li> El campo no puede estar vacío. </li> <li> La longitud no puede superar los 40 caracteres. </li> <li> El campo no puede poseer caracteres especiales. </li> </ul>  |
+| `type`           | SI            | <ul> <li>Que el campo no esté vacío.</li> <li> Longitud máxima de 15 caracteres. </li> <li> Que no posea caracteres especiales (%, &, $, etc)  </li> </ul>                   | <ul> <li> El campo no puede estar vacío. </li> <li> La longitud no puede superar los 15 caracteres. </li> <li> El campo no puede poseer caracteres especiales. </li> </ul>  |
+| `brand`          | SI            | <ul> <li>Que el campo no esté vacío.</li> <li> Longitud máxima de 25 caracteres. </li> <li> Que no posea caracteres especiales (%, &, $, etc) </li> </ul>                    | <ul> <li> La longitud no puede superar los 25 caracteres. </li> <li> El campo no puede estar vacío. </li> <li> El campo no puede poseer caracteres especiales. </li> </ul>  |
+| `color`          | SI            | <ul> <li>Que el campo no esté vacío.</li> <li> Longitud máxima de 15 caracteres. </li> <li> Que no posea caracteres especiales (%, &, $, etc) </li> </ul>                    | <ul> <li> El campo no puede estar vacío. </li> <li> La longitud no puede superar los 15 caracteres. </li> <li> El campo no puede poseer caracteres especiales. </li> </ul>  |
+| `notes`          | NO            | <ul> <li>Longitud máxima de 80 caracteres.</li> <li> Que no posea caracteres especiales (%, &, $, etc), permite espacios. </li> </ul>                                        | <ul> <li> La longitud no puede superar los 80 caracteres. </li> <li> El campo no puede poseer caracteres especiales. </li> </ul>                                            |
+| `category`       | SI            | <ul> <li>Que el campo no esté vacío.</li> </ul>                                                                                                                              | <ul> <li> El campo no puede estar vacío. </li> </ul>                                                                                                                        |
+| `price`          | SI            | <ul> <li>Que el campo no esté vacío.</li> <li> El precio máximo puede ser 10.000.000. </li> </ul>                                                                            | <ul> <li> El campo no puede estar vacío. </li> <li> El precio máximo por producto es de 10.000.000 </li> </ul>                                                              |
+
+
+
+
+
+## Tests Unitarios
+
+## Tests de Itegración
 
 ## Integrantes
 
