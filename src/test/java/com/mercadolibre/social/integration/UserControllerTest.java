@@ -2,8 +2,7 @@ package com.mercadolibre.social.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mercadolibre.social.dto.response.*;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,6 +20,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class UserControllerTest {
     @Autowired
     MockMvc mockMvc;
@@ -28,6 +28,7 @@ class UserControllerTest {
     ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
+    @Order(1)
     @DisplayName("IT-01: Validar acción de “Follow” (seguir) a un determinado usuario")
     public void givenUser_whenFollowAnotherUser_thenUserIsFollowed() throws Exception {
         // ARRANGE
@@ -54,6 +55,7 @@ class UserControllerTest {
 
 
     @Test
+    @Order(2)
     @DisplayName("IT-05 -> US-02: Obtener el resultado de la cantidad de usuarios que siguen a un determinado vendedor")
     void givenUserId_whenGetCountFollowers_thenReturnCorrectFollowersCount() throws Exception{
         // ARRANGE
@@ -72,6 +74,7 @@ class UserControllerTest {
     }
 
     @Test
+    @Order(3)
     @DisplayName("Carga de JSON segun el contexto.")
     public void pruebaTest() throws Exception {
         //ARRANGE
@@ -90,6 +93,7 @@ class UserControllerTest {
     }
 
     @Test
+    @Order(4)
     @DisplayName("IT-02 -> US-03: Obtener un listado de todos los usuarios que siguen a un determinado vendedor")
     public void givenUser_whenGetFollowers_thenReturnCorrectFollowersList() throws Exception {
         //ARRANGE
@@ -108,6 +112,7 @@ class UserControllerTest {
     }
 
     @Test
+    @Order(5)
     @DisplayName("IT-03 -> US-07: Poder realizar la acción de “Unfollow” (dejar de seguir) a un determinado vendedor.")
     public void givenUser_whenUnFollow_thenReturnCorrectMessage() throws Exception {
         //ARRANGE
