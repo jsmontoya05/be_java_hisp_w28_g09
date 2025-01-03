@@ -6,8 +6,7 @@ import com.mercadolibre.social.dto.request.PostPromotionRequestDto;
 import com.mercadolibre.social.dto.request.PostRequestDto;
 import com.mercadolibre.social.dto.request.ProductDto;
 import com.mercadolibre.social.dto.response.MessageDto;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -27,6 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class PostControllerTest {
     @Autowired
     MockMvc mockMvc;
@@ -34,6 +34,7 @@ class PostControllerTest {
     ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
+    @Order(1)
     @DisplayName("IT-08 -> US-10 Llevar a cabo la publicación de un nuevo producto en promoción")
     public void givenPostPromotionRequestDto_whenPostPromotion_thenSuccess() throws Exception {
         // ARRANGE
@@ -70,12 +71,13 @@ class PostControllerTest {
     }
 
     @Test
+    @Order(2)
     @DisplayName("IT-06 -> US-05 Dar de alta una nueva publicación")
     public void givenPostRequestDto_whenPost_thenSuccess() throws Exception {
         // ARRANGE
         LocalDate currentDate = LocalDate.now();
 
-        MessageDto messageDto = new MessageDto("The post with id 100 has been created correctly");
+        MessageDto messageDto = new MessageDto("The post with id 101 has been created correctly");
         ProductDto productDto = new ProductDto(100, "productName", "type", "brand", "color", "notes");
 
         PostRequestDto postRequestDto = new PostRequestDto(
