@@ -85,13 +85,13 @@ class PostControllerTest {
     public void givenSellerWithPromotionalProducts_whenGetPromotionProductCount_thenReturnCorrectCount() throws Exception {
         //ARRANGE
 
-        ProductCountPromoPostDto response = new ProductCountPromoPostDto(1, "john_doe_test", 1);
+        ProductCountPromoPostDto response = new ProductCountPromoPostDto(2, "alice_smith_test", 4);
         ResultMatcher expectedStatus = status().isOk();
         ResultMatcher expectedContentType = content().contentType(MediaType.APPLICATION_JSON);
         ResultMatcher expectedBody = content().json(objectMapper.writeValueAsString(response));
         //ACT AND ASSERT
         mockMvc.perform(get("/products/promo-post/count")
-                .param("user_id", "1"))
+                .param("user_id", "2"))
                 .andExpectAll(
                         expectedStatus,
                         expectedContentType,

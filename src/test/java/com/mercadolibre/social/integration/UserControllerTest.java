@@ -75,10 +75,10 @@ class UserControllerTest {
         // ARRANGE
 
         // Parametro del usuario
-        Integer userParam = 1;
+        Integer userParam = 2;
         FollowedByUserDto response = new FollowedByUserDto(
-                1,
-                "john_doe_test",
+                2,
+                "alice_smith_test",
                 List.of(
                         new UserDto(
                                3,
