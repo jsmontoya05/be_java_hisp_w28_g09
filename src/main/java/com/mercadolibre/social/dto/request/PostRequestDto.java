@@ -17,16 +17,16 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class PostRequestDto {
     @JsonProperty("user_id")
-    @NotNull(message = "El ID no puede estar vacio.")
+    @NotNull(message = "El ID no puede estar vacio")
     @Min(value = 1, message = "El ID debe ser mayor a 0.")
     private Integer userId;
     @JsonFormat(pattern = "dd-MM-yyyy")
     @NotNull(message = "La fecha no puede estar vacía")
     private LocalDate date;
     private ProductDto product;
-    @NotNull(message = "El campo no puede estar vacio.")
+    @NotNull(message = "El campo no puede estar vacio")
     private Integer category;
-    @NotNull(message = "El campo no puede estar vacio.")
+    @NotNull(message = "El campo no puede estar vacio")
     @DecimalMax(value = "10000000.00", message = "El precio no puede ser mayor a 10.000.000")
     private Double price;
 }
