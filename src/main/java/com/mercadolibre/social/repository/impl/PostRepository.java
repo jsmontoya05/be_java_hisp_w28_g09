@@ -7,9 +7,9 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.mercadolibre.social.entity.Post;
-import com.mercadolibre.social.exception.NotFoundException;
 import com.mercadolibre.social.repository.IPostRepository;
 import org.springframework.stereotype.Repository;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDate;
@@ -19,8 +19,8 @@ import java.util.List;
 @Repository
 public class PostRepository implements IPostRepository {
 
-    private static Integer nextId = 100;  // Variable estática para generar IDs únicos
-    private List<Post> posts;
+    private static Integer nextId = 100;  // Variable estática para generar ID únicos
+    private final List<Post> posts;
 
     public PostRepository() throws IOException {
         posts = loadDataBase();
@@ -39,14 +39,6 @@ public class PostRepository implements IPostRepository {
     }
 
     @Override
-    public Post findById(Integer id) {
-        return posts.stream()
-                .filter(p -> p.getId().equals(id))
-                .findFirst()
-                .orElseThrow(() -> new NotFoundException("Post not found with ID: " + id));
-    }
-
-    @Override
     public List<Post> findByProductId(Integer id) {
         return posts.stream().filter(post -> post.getProductId().equals(id)).toList();
     }
@@ -54,7 +46,7 @@ public class PostRepository implements IPostRepository {
     private List<Post> loadDataBase() throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         SimpleModule module = new SimpleModule();
-        module.addDeserializer(LocalDate.class, new JsonDeserializer<LocalDate>() {
+        module.addDeserializer(LocalDate.class, new JsonDeserializer<>() {
             @Override
             public LocalDate deserialize(JsonParser p, DeserializationContext text) throws IOException {
                 String date = p.getText();
@@ -69,7 +61,7 @@ public class PostRepository implements IPostRepository {
             if (inputStream == null) {
                 throw new IOException("El archivo JSON no se encontró: " + "/posts.json");
             }
-            return objectMapper.readValue(inputStream, new TypeReference<List<Post>>() {
+            return objectMapper.readValue(inputStream, new TypeReference<>() {
             });
         }
     }

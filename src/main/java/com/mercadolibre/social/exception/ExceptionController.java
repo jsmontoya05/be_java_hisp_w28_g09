@@ -13,18 +13,16 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
-import java.util.stream.Collectors;
-
 @ControllerAdvice
 public class ExceptionController {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorDTO> validationException(MethodArgumentNotValidException e){
+    public ResponseEntity<ErrorDTO> validationException(MethodArgumentNotValidException e) {
 
         ErrorDTO errorDTO = new ErrorDTO("Se encontraron los siguientes errores en las validaciones: @Valid del DTO",
                 e.getAllErrors().stream()
                         .map(DefaultMessageSourceResolvable::getDefaultMessage)
-                        .collect(Collectors.toList()).toString());
+                        .toList().toString());
 
         return ResponseEntity.badRequest().body(errorDTO);
     }
@@ -38,13 +36,13 @@ public class ExceptionController {
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<ErrorDTO> validationException(ConstraintViolationException e){
+    public ResponseEntity<ErrorDTO> validationException(ConstraintViolationException e) {
         return ResponseEntity.badRequest().body(
                 new ErrorDTO("Se encontraron los siguientes errores en las validaciones en el PathVariable y RequestParam ",
                         e.getConstraintViolations()
                                 .stream()
-                                .map(v-> v.getConstraintDescriptor().getMessageTemplate())
-                                .collect(Collectors.toList())
+                                .map(v -> v.getConstraintDescriptor().getMessageTemplate())
+                                .toList()
                                 .toString()
                 )
         );

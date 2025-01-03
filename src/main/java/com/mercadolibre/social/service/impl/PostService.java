@@ -7,7 +7,6 @@ import com.mercadolibre.social.entity.Post;
 import com.mercadolibre.social.entity.Product;
 import com.mercadolibre.social.entity.User;
 import com.mercadolibre.social.exception.BadRequestException;
-import com.mercadolibre.social.exception.NotFoundException;
 import com.mercadolibre.social.repository.IPostRepository;
 import com.mercadolibre.social.repository.IProductRepository;
 import com.mercadolibre.social.repository.IUserRepository;
@@ -15,8 +14,9 @@ import com.mercadolibre.social.service.IPostService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.*;
-import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Set;
 
 @Service
 public class PostService implements IPostService {
@@ -107,7 +107,7 @@ public class PostService implements IPostService {
         // Verifica que el usuario existe
         User user = userRepository.findById(userId);
 
-        // Obtén los IDs de los usuarios seguidos
+        // Obtén los ID de los usuarios seguidos
         Set<Integer> followedUsers = user.getFollowed();
 
         // Filtra las publicaciones realizadas por los usuarios seguidos
@@ -119,12 +119,12 @@ public class PostService implements IPostService {
         List<Post> orderedPost;
 
         if (order != null) {
-            if(order.equalsIgnoreCase("date_asc")) {
+            if (order.equalsIgnoreCase("date_asc")) {
                 orderedPost = filteredPosts
                         .stream()
                         .sorted(Comparator.comparing(Post::getDate))
                         .toList();
-            } else if(order.equalsIgnoreCase("date_desc")) {
+            } else if (order.equalsIgnoreCase("date_desc")) {
                 orderedPost = filteredPosts
                         .stream()
                         .sorted(Comparator.comparing(Post::getDate).reversed())

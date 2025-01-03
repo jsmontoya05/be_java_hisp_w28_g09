@@ -1,12 +1,10 @@
 package com.mercadolibre.social.unit;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mercadolibre.social.dto.response.PostDetailsDTO;
 import com.mercadolibre.social.entity.Post;
 import com.mercadolibre.social.entity.Product;
 import com.mercadolibre.social.repository.impl.PostRepository;
 import com.mercadolibre.social.repository.impl.ProductRepository;
-import com.mercadolibre.social.service.impl.PostService;
 import com.mercadolibre.social.service.impl.ProductService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,7 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDate;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -31,13 +29,6 @@ class ProductServiceTest {
 
     @InjectMocks
     private ProductService productService;
-
-    @InjectMocks
-    private PostService postService;
-
-
-
-    ObjectMapper objectMapper = new ObjectMapper();
 
 
     @Test

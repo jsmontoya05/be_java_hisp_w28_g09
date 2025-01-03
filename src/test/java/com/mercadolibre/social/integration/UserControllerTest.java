@@ -1,14 +1,8 @@
 package com.mercadolibre.social.integration;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mercadolibre.social.dto.response.FollowedByUserDto;
-import com.mercadolibre.social.dto.response.FollowersByUserDto;
-import com.mercadolibre.social.dto.response.UserCountFollowersDto;
-import com.mercadolibre.social.dto.response.UserDto;
-import com.mercadolibre.social.repository.impl.UserRepository;
 
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mercadolibre.social.dto.response.*;
+import com.mercadolibre.social.repository.impl.UserRepository;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -17,14 +11,14 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultMatcher;
 
-import java.io.IOError;
 import java.io.IOException;
 import java.util.List;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -49,9 +43,9 @@ class UserControllerTest {
     public void givenUser_whenFollowAnotherUser_thenUserIsFollowed() throws Exception {
         // ARRANGE
 
-        // Parametro del seguidor
+        // Parámetro del seguidor
         Integer followerParam = 1;
-        // Parametro del seguido
+        // Parámetro del seguido
         Integer followedParam = 2;
         FollowUserResponseDto response = new FollowUserResponseDto(followerParam, followedParam);
         ResultMatcher expectedStatus = status().isOk();
@@ -73,9 +67,9 @@ class UserControllerTest {
     public void givenUser_whenFollowAnotherUser_thenUserNotFound() throws Exception {
         // ARRANGE
 
-        // Parametro del seguidor
+        // Parámetro del seguidor
         Integer followerParam = 100;
-        // Parametro del seguido
+        // Parámetro del seguido
         Integer followedParam = 2;
         ExceptionDto response = new ExceptionDto("User not found with ID: " + followerParam);
         ResultMatcher expectedStatus = status().isNotFound();
@@ -97,15 +91,15 @@ class UserControllerTest {
     public void givenUser_whenFetchFollowedSellers_thenReturnSellerList() throws Exception {
         // ARRANGE
 
-        // Parametro del usuario
+        // Parámetro del usuario
         Integer userParam = 2;
         FollowedByUserDto response = new FollowedByUserDto(
                 2,
                 "alice_smith_test",
                 List.of(
                         new UserDto(
-                               3,
-                               "bob_jones"
+                                3,
+                                "bob_jones"
                         )
                 ));
         ResultMatcher expectedStatus = status().isOk();
@@ -125,7 +119,7 @@ class UserControllerTest {
     @Test
     @Order(2)
     @DisplayName("IT-05 -> US-02: Obtener el resultado de la cantidad de usuarios que siguen a un determinado vendedor")
-    void givenUserId_whenGetCountFollowers_thenReturnCorrectFollowersCount() throws Exception{
+    void givenUserId_whenGetCountFollowers_thenReturnCorrectFollowersCount() throws Exception {
         // ARRANGE
         int userId = 3;
         UserCountFollowersDto response = new UserCountFollowersDto(String.valueOf(userId), "bob_jones", 2);
@@ -143,7 +137,7 @@ class UserControllerTest {
 
     @Test
     @Order(3)
-    @DisplayName("Carga de JSON segun el contexto.")
+    @DisplayName("Carga de JSON según el contexto.")
     public void pruebaTest() throws Exception {
         //ARRANGE
         UserCountFollowersDto bodyEsperadoDTO = new UserCountFollowersDto("1", "john_doe_test", 0);
@@ -166,7 +160,7 @@ class UserControllerTest {
     public void givenUser_whenGetFollowers_thenReturnCorrectFollowersList() throws Exception {
         //ARRANGE
         Integer parametroEntrada = 3;
-        FollowersByUserDto bodyEsperadoDTO = new FollowersByUserDto(3, "bob_jones", List.of(new UserDto(1,"john_doe_test"), new UserDto(2,"alice_smith_test")));
+        FollowersByUserDto bodyEsperadoDTO = new FollowersByUserDto(3, "bob_jones", List.of(new UserDto(1, "john_doe_test"), new UserDto(2, "alice_smith_test")));
         ResultMatcher statusEsperado = status().isOk();
         ResultMatcher contentTypeEsperado = content().contentType("application/json");
         ResultMatcher bodyEsperado = content().json(objectMapper.writeValueAsString(bodyEsperadoDTO));

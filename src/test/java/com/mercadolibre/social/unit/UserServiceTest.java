@@ -1,18 +1,10 @@
 package com.mercadolibre.social.unit;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mercadolibre.social.dto.response.*;
-import com.mercadolibre.social.exception.NotFoundException;
-import com.mercadolibre.social.entity.User;
-
 import com.mercadolibre.social.entity.User;
 import com.mercadolibre.social.exception.BadRequestException;
-import com.mercadolibre.social.dto.response.MessageDto;
 import com.mercadolibre.social.exception.NotFoundException;
-import com.mercadolibre.social.dto.response.UserCountFollowersDto;
-import com.mercadolibre.social.repository.impl.PostRepository;
 import com.mercadolibre.social.repository.impl.UserRepository;
-import com.mercadolibre.social.service.impl.PostService;
 import com.mercadolibre.social.service.impl.UserService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,19 +13,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import java.util.HashSet;
-import java.util.Set;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
@@ -43,17 +29,15 @@ class UserServiceTest {
     @InjectMocks
     private UserService userService;
 
-    ObjectMapper objectMapper = new ObjectMapper();
-
     @Test
     @DisplayName("UT-01 Verificar que el usuario a seguir exista.")
     public void givenUser_whenCheckFollowUser_thenUserExists() {
         //ARRANGE
-        FollowUserResponseDto expectedResponse = new FollowUserResponseDto(2,1);
+        FollowUserResponseDto expectedResponse = new FollowUserResponseDto(2, 1);
         // el seguidor.
-        Integer userFollowerIdParam = 2;
+        int userFollowerIdParam = 2;
         // el seguido.
-        Integer userFollowedIdParam = 1;
+        int userFollowedIdParam = 1;
         //mock del seguido
         User followedMock = new User(1, "john_doe_test", new HashSet<>(Set.of(3)), new HashSet<>());
         //mock del seguidor
@@ -62,7 +46,7 @@ class UserServiceTest {
         //ACT
         Mockito.when(userRepository.findById(userFollowedIdParam)).thenReturn(followedMock);
         Mockito.when(userRepository.findById(userFollowerIdParam)).thenReturn(followerMock);
-        FollowUserResponseDto responseObtained =  userService.followUser(userFollowerIdParam, userFollowedIdParam);
+        FollowUserResponseDto responseObtained = userService.followUser(userFollowerIdParam, userFollowedIdParam);
 
         //ASSERT
         assertEquals(expectedResponse, responseObtained);
@@ -74,20 +58,20 @@ class UserServiceTest {
         //ARRANGE
 
         // el seguidor.
-        Integer userFollowerIdParam = 2;
+        int userFollowerIdParam = 2;
         // el seguido.
-        Integer userFollowedIdParam = 10;
+        int userFollowedIdParam = 10;
 
         String expectedResponse = "User not found with ID: " + userFollowedIdParam;
         //mock del seguido
-        Integer followedMockId = userFollowedIdParam;
+        int followedMockId = userFollowedIdParam;
         //mock del seguidor
         User followerMock = new User(2, "alice_smith_test", new HashSet<>(Set.of(3)), new HashSet<>());
 
         //ACT
         Mockito.when(userRepository.findById(userFollowedIdParam)).thenThrow(new NotFoundException("User not found with ID: " + followedMockId));
         Mockito.when(userRepository.findById(userFollowerIdParam)).thenReturn(followerMock);
-        NotFoundException exceptionObtained = assertThrows(NotFoundException.class, ()-> userService.followUser(userFollowerIdParam, userFollowedIdParam));
+        NotFoundException exceptionObtained = assertThrows(NotFoundException.class, () -> userService.followUser(userFollowerIdParam, userFollowedIdParam));
 
         //ASSERT
         assertEquals(expectedResponse, exceptionObtained.getMessage());
@@ -95,12 +79,12 @@ class UserServiceTest {
 
     @Test
     @DisplayName("UT-03: Verificar que el tipo de ordenamiento alfabético ascendente exista")
-    void givenUser_whenGetCountFollowersSorted_thenReturnCorrectFollowersCountSorted(){
+    void givenUser_whenGetCountFollowersSorted_thenReturnCorrectFollowersCountSorted() {
         //ARRANGE
         int id = 1;
         String order = "name_asc";
 
-        User user = new User(1, "Pedro", new HashSet<>(789, 126), new HashSet<>(123,456));
+        User user = new User(1, "Pedro", new HashSet<>(789, 126), new HashSet<>(123, 456));
 
         List<User> users = new ArrayList<>(List.of(new User(123, "juan", new HashSet<>(789, 126), new HashSet<>(123, 456))));
 
@@ -119,12 +103,12 @@ class UserServiceTest {
 
     @Test
     @DisplayName("UT-03: Verificar que el tipo de ordenamiento alfabético descendente exista")
-    void givenUser_whenGetCountFollowersSorted_thenReturnCorrectFollowersCountSortedDesc(){
+    void givenUser_whenGetCountFollowersSorted_thenReturnCorrectFollowersCountSortedDesc() {
         //ARRANGE
         int id = 1;
         String order = "name_desc";
 
-        User user = new User(1, "Pedro", new HashSet<>(789, 126), new HashSet<>(123,456));
+        User user = new User(1, "Pedro", new HashSet<>(789, 126), new HashSet<>(123, 456));
 
         List<User> users = new ArrayList<>(List.of(new User(123, "juan", new HashSet<>(789, 126), new HashSet<>(123, 456))));
 
@@ -142,13 +126,13 @@ class UserServiceTest {
     }
 
     @Test
-    @DisplayName("UT-03: Verificar que el tipo de ordenamiento alfabético no exista y lance una excepcion")
-    void givenUser_whenGetCountFollowersSortedIncorrect_thenReturnBadRequestException(){
+    @DisplayName("UT-03: Verificar que el tipo de ordenamiento alfabético no exista y lance una excepción")
+    void givenUser_whenGetCountFollowersSortedIncorrect_thenReturnBadRequestException() {
         //ARRANGE
         int id = 1;
         String order = "incorrect";
 
-        User user = new User(1, "Pedro", new HashSet<>(789, 126), new HashSet<>(123,456));
+        User user = new User(1, "Pedro", new HashSet<>(789, 126), new HashSet<>(123, 456));
 
         List<User> users = new ArrayList<>(Arrays.asList(new User(123, "juan", new HashSet<>(789, 126), new HashSet<>(123, 456)),
                 new User(456, "pepito", new HashSet<>(789, 126), new HashSet<>(123, 456)),
@@ -159,12 +143,12 @@ class UserServiceTest {
         when(userRepository.findUsersByIds(anySet())).thenReturn(users);
 
         //ASSERT
-        assertThrows(BadRequestException.class, () -> userService.followersByUser(id,order), "Deberia lanzar una excepcion");
+        assertThrows(BadRequestException.class, () -> userService.followersByUser(id, order), "Debería lanzar una excepción");
 
         verify(userRepository, times(1)).findById(anyInt());
         verify(userRepository, times(1)).findUsersByIds(anySet());
     }
-  
+
     @Test
     @DisplayName("UT-02: Verificar que el usuario a dejar de seguir exista")
     void givenUserAndUserToUnfollow_whenUnfollow_thenReturnCorrectMessage() {
@@ -255,21 +239,21 @@ class UserServiceTest {
 
     @Test
     @DisplayName("UT-04: Verificar el correcto ordenamiento ascendente por nombre.")
-    void givenUser_whenGetCountFollowedSortedAsc_thenReturnCorrectFollowedCountSortedAsc(){
+    void givenUser_whenGetCountFollowedSortedAsc_thenReturnCorrectFollowedCountSortedAsc() {
         //ARRANGE
         int id = 1;
         String order = "name_asc";
 
-        User user = new User(1, "Pedro", new HashSet<>(789, 126), new HashSet<>(123,456));
+        User user = new User(1, "Pedro", new HashSet<>(789, 126), new HashSet<>(123, 456));
 
         List<User> users = new ArrayList<>(Arrays.asList(new User(123, "juan", new HashSet<>(789, 126), new HashSet<>(123, 456)),
                 new User(456, "pepito", new HashSet<>(789, 126), new HashSet<>(123, 456)),
                 new User(789, "ana", new HashSet<>(789, 126), new HashSet<>(123, 456))));
 
-        FollowedByUserDto expected = new FollowedByUserDto(1,"Pedro",
+        FollowedByUserDto expected = new FollowedByUserDto(1, "Pedro",
                 List.of(new UserDto(123, "juan"),
                         new UserDto(456, "pepito"),
-                        new UserDto(789,"ana")));
+                        new UserDto(789, "ana")));
 
         //ACT
         when(userRepository.findById(anyInt())).thenReturn(user);
@@ -281,7 +265,7 @@ class UserServiceTest {
         assertNotNull(result, "El resultado no debe de ser nulo");
         assertEquals(expected.getFollowed().size(), result.getFollowed().size(), "No coincide la cantidad de seguidores");
         assertEquals(expected.getUserName(), result.getUserName(), "No coincide el nombre de los usuarios");
-        assertEquals("ana",result.getFollowed().getFirst().getUserName(), "No se esta ordenando correctamente la lista de seguidores");
+        assertEquals("ana", result.getFollowed().getFirst().getUserName(), "No se esta ordenando correctamente la lista de seguidores");
 
         verify(userRepository, times(1)).findById(anyInt());
         verify(userRepository, times(1)).findUsersByIds(anySet());
@@ -289,21 +273,21 @@ class UserServiceTest {
 
     @Test
     @DisplayName("UT-04: Verificar el correcto ordenamiento descendente por nombre.")
-    void givenUser_whenGetCountFollowedSortedDesc_thenReturnCorrectFollowedCountSortedDesc(){
+    void givenUser_whenGetCountFollowedSortedDesc_thenReturnCorrectFollowedCountSortedDesc() {
         //ARRANGE
         int id = 1;
         String order = "name_desc";
 
-        User user = new User(1, "Pedro", new HashSet<>(789, 126), new HashSet<>(123,456));
+        User user = new User(1, "Pedro", new HashSet<>(789, 126), new HashSet<>(123, 456));
 
         List<User> users = new ArrayList<>(Arrays.asList(new User(123, "juan", new HashSet<>(789, 126), new HashSet<>(123, 456)),
                 new User(456, "pepito", new HashSet<>(789, 126), new HashSet<>(123, 456)),
                 new User(789, "ana", new HashSet<>(789, 126), new HashSet<>(123, 456))));
 
-        FollowedByUserDto expected = new FollowedByUserDto(1,"Pedro",
+        FollowedByUserDto expected = new FollowedByUserDto(1, "Pedro",
                 List.of(new UserDto(123, "juan"),
                         new UserDto(456, "pepito"),
-                        new UserDto(789,"ana")));
+                        new UserDto(789, "ana")));
 
         //ACT
         when(userRepository.findById(anyInt())).thenReturn(user);
@@ -315,7 +299,7 @@ class UserServiceTest {
         assertNotNull(result, "El resultado no debe de ser nulo");
         assertEquals(expected.getFollowed().size(), result.getFollowed().size(), "No coincide la cantidad de seguidores");
         assertEquals(expected.getUserName(), result.getUserName(), "No coincide el nombre de los usuarios");
-        assertEquals("pepito",result.getFollowed().getFirst().getUserName(), "No se esta ordenando correctamente la lista de seguidores");
+        assertEquals("pepito", result.getFollowed().getFirst().getUserName(), "No se esta ordenando correctamente la lista de seguidores");
 
         verify(userRepository, times(1)).findById(anyInt());
         verify(userRepository, times(1)).findUsersByIds(anySet());
