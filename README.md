@@ -24,6 +24,8 @@ Crear una aplicación que permita a los usuarios realizar acciones clave, como s
 
 - **Postman:** Plataforma para el desarrollo y prueba de API's, facilitando la validación de endpoints y la interacción con la API.
 
+- **JUnit:** Marco de pruebas unitarias para garantizar la calidad del código y la funcionalidad de la API.
+
 ## Diagrama de Clases
 
 El **Diagrama de Clases** representa las clases y las relaciones entre ellas en el sistema. Muestra la estructura estática del sistema, incluyendo las clases, sus atributos, métodos y cómo se relacionan. Este diagrama proporciona una visión general de la arquitectura y la organización de clases en el código fuente.
@@ -460,6 +462,67 @@ Buscar y filtrar productos basados en atributos como `category`, `price`, `hasPr
 | `rangePrice`         | String  | Rango de precio para filtrar productos donde se pasan dos valores numericos separados por un guion     |
 ---
 
+## Validaciones
+Se realizan las siguientes validaciones para los parámetros de las solicitudes:
+
+| Dato/Parámetro   | ¿Obligatorio? | Validación                                                                                                                                                                   | Mensaje de error                                                                                                                                                            |
+|------------------|---------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `user_id`        | SI            | <ul> <li>Que el campo no esté vacío.</li> <li> Mayor 0 </li> </ul>                                                                                                           | <ul> <li> El  id no puede estar vacío. </li> <li> El id debe ser mayor a cero. </li> </ul>                                                                                  |
+| `date`           | SI            | <ul> <li> Que el campo no esté vacío. </li> </ul>                                                                                                                            | <ul> <li> La fecha no puede estar vacía. </li> </ul>                                                                                                                        |
+| `product_id`     | SI            | <ul> <li>Que el campo no esté vacío.</li> <li> Mayor 0 </li> </ul>                                                                                                           | <ul> <li> La id no puede estar vacía. </li> <li> El id debe ser mayor a cero </li> </ul>                                                                                    |
+| `product_name`   | SI            | <ul> <li>Que el campo no esté vacío.</li> <li> Longitud máxima de 40 caracteres. </li> <li> Que no posea caracteres especiales (%, &, $, etc), permite espacios. </li> </ul> | <ul> <li> El campo no puede estar vacío. </li> <li> La longitud no puede superar los 40 caracteres. </li> <li> El campo no puede poseer caracteres especiales. </li> </ul>  |
+| `type`           | SI            | <ul> <li>Que el campo no esté vacío.</li> <li> Longitud máxima de 15 caracteres. </li> <li> Que no posea caracteres especiales (%, &, $, etc)  </li> </ul>                   | <ul> <li> El campo no puede estar vacío. </li> <li> La longitud no puede superar los 15 caracteres. </li> <li> El campo no puede poseer caracteres especiales. </li> </ul>  |
+| `brand`          | SI            | <ul> <li>Que el campo no esté vacío.</li> <li> Longitud máxima de 25 caracteres. </li> <li> Que no posea caracteres especiales (%, &, $, etc) </li> </ul>                    | <ul> <li> La longitud no puede superar los 25 caracteres. </li> <li> El campo no puede estar vacío. </li> <li> El campo no puede poseer caracteres especiales. </li> </ul>  |
+| `color`          | SI            | <ul> <li>Que el campo no esté vacío.</li> <li> Longitud máxima de 15 caracteres. </li> <li> Que no posea caracteres especiales (%, &, $, etc) </li> </ul>                    | <ul> <li> El campo no puede estar vacío. </li> <li> La longitud no puede superar los 15 caracteres. </li> <li> El campo no puede poseer caracteres especiales. </li> </ul>  |
+| `notes`          | NO            | <ul> <li>Longitud máxima de 80 caracteres.</li> <li> Que no posea caracteres especiales (%, &, $, etc), permite espacios. </li> </ul>                                        | <ul> <li> La longitud no puede superar los 80 caracteres. </li> <li> El campo no puede poseer caracteres especiales. </li> </ul>                                            |
+| `category`       | SI            | <ul> <li>Que el campo no esté vacío.</li> </ul>                                                                                                                              | <ul> <li> El campo no puede estar vacío. </li> </ul>                                                                                                                        |
+| `price`          | SI            | <ul> <li>Que el campo no esté vacío.</li> <li> El precio máximo puede ser 10.000.000. </li> </ul>                                                                            | <ul> <li> El campo no puede estar vacío. </li> <li> El precio máximo por producto es de 10.000.000 </li> </ul>                                                              |
+
+
+
+
+
+## Tests Unitarios
+
+Para garantizar la robustez y la confiabilidad de la aplicación, se han implementado pruebas unitarias utilizando el framework JUnit. Las pruebas unitarias se centran en evaluar cada componente individual de la aplicación de manera aislada, verificando su comportamiento y asegurando que cumpla con los requisitos establecidos.
+
+| No. de Test | Situaciones de Entrada                                            | Comportamiento Esperado                                      | Realizado por |
+|-------------|------------------------------------------------------------------|-------------------------------------------------------------|-|
+| UT-01       | Verificar que el usuario a seguir exista (US-0001)               | Se cumple: Permite continuar con normalidad.  <br/><br/>No se cumple: Notifica la no existencia mediante una excepción.               | `Brayan - Karen` |                                                                              
+| UT-02       | Verificar que el usuario a dejar de seguir exista (US-0007)      | Se cumple: Permite continuar con normalidad.  <br/><br/>No se cumple: Notifica la no existencia mediante una excepción.               | `Santiago Mariño - Gianluca` |
+| UT-03       | Verificar que el tipo de ordenamiento alfabético exista (US-0008) | Se cumple: Permite continuar con normalidad.  <br/><br/>No se cumple: Notifica la no existencia mediante una excepción.               | `Santiago Montoya - Eilin Dianella` |
+| UT-04       | Verificar el correcto ordenamiento ascendente y descendente por nombre | Devuelve la lista ordenada según el criterio solicitado.     | `Santiago Montoya - Eilin Dianella`  |
+| UT-05       | Verificar que el tipo de ordenamiento por fecha exista (US-0009) | Se cumple: Permite continuar con normalidad.    <br/><br/>No se cumple: Notifica la no existencia mediante una excepción.             | `Santiago Mariño - Gianluca` |
+| UT-06       | Verificar el correcto ordenamiento ascendente y descendente por fecha (US-0009) | Verifica el correcto ordenamiento ascendente y descendente por fecha. | `Santiago Montoya - Eilin Dianella` |
+| UT-07       | Verificar que la cantidad de seguidores de un determinado usuario sea correcta (US-0002) | Devuelve el cálculo correcto del total de seguidores.       | `Santiago Mariño - Gianluca`|
+| UT-08       | Verificar que la consulta de publicaciones realizadas en las últimas dos semanas de un determinado vendedor sean efectivamente de las últimas dos semanas (US-0006) | Devuelve únicamente los datos de las publicaciones recientes. | `Brayan - Karen` |
+
+
+## Tests de Integración
+
+Además de las pruebas unitarias, la aplicación también se somete a pruebas de integración. Estas pruebas evalúan la interoperabilidad y el comportamiento conjunto de varios componentes del sistema. Las pruebas de integración son esenciales para garantizar que los diferentes módulos de la aplicación funcionen correctamente cuando se combinan.
+
+| No. de Test | Situaciones de Entrada                                                                                             | Comportamiento Esperado                                                      | Realizado por               |
+|-------------|--------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------|------------------------------|
+| IT-01       | Usuario X sigue a Usuario Y.                                                                                       | Respuesta con status 200 (OK) y devolución correcta de la acción de "Follow".| `Brayan - Karen`            |
+| IT-01       | Usuario X intenta seguir a Usuario Y (Usuario X no existe).                                                        | Respuesta con status 404 (Not Found) y mensaje de error indicando que el usuario no fue encontrado. | `Brayan - Karen`            |
+| IT-02       | Usuario X solicita listado de seguidores.                                                                          | Respuesta con status 200 (OK) y listado de seguidores correcto.             | `Santiago Mariño - Gianluca` |
+| IT-03       | Usuario X intenta dejar de seguir a Usuario Y.                                                                     | Respuesta con status 200 (OK) y mensaje confirmando que se ha dejado de seguir. | `Santiago Montoya - Eilin Dianella` |
+| IT-04       | Usuario X solicita listado de vendedores a los que sigue.                                                          | Respuesta con status 200 (OK) y listado correcto de vendedores.            | `Brayan - Karen`            |
+| IT-05       | Usuario X solicita el conteo de sus seguidores.                                                                    | Respuesta con status 200 (OK) y conteo correcto de seguidores.             | `Santiago Mariño - Gianluca` |
+| IT-06       | Solicitud para dar de alta una nueva publicación con todos los datos válidos.                                      | Respuesta con status 200 (OK) y mensaje confirmando la creación correcta.  | `Santiago Mariño - Gianluca` |
+| IT-07       | Solicitud de la cantidad de productos en promoción de un determinado vendedor (user_id = 2).                       | Respuesta con status 200 (OK) y devolución correcta de la cantidad de productos en promoción. | `Brayan - Karen`            |
+| IT-08       | Solicitud para crear una publicación de un nuevo producto en promoción con todos los datos válidos.                | Respuesta con status 200 (OK) y mensaje confirmando la creación exitosa.   | `Santiago Mariño - Gianluca` |
+| IT-09       | Usuario 1 solicita un listado de publicaciones realizadas por los vendedores que sigue en las últimas dos semanas. | Respuesta con status 200 (OK) y listado correcto de publicaciones.          | `Santiago Montoya - Eilin Dianella` |
+| IT-BONUS    | Búsqueda de productos con un query "light" y un rango de precio "100-149".                                         | Respuesta con status 200 (OK) y devolución de resultados filtrados según los criterios. | `Santiago Mariño - Gianluca` |
+
+## Cobertura de Código
+
+Se ha realizado un análisis de cobertura de código para evaluar la extensión en la que las pruebas abarcan el código fuente. La cobertura de código proporciona información sobre las porciones de código que han sido ejecutadas durante las pruebas.
+
+### Análisis de Cobertura de Código
+
+La cobertura de código obtenida es superior al **80%**. Esto indica que un porcentaje significativo del código ha sido probado a través de las diferentes pruebas implementadas. Para validar la cobertura de código, se puede ejecutar el análisis de cobertura utilizando la herramienta de cobertura disponible en el IDE que estés utilizando. Esta herramienta te proporcionará un informe detallado sobre qué partes del código fueron ejecutadas durante las pruebas, así como cualquier área que pueda necesitar atención adicional en términos de pruebas.
 
 ## Integrantes
 

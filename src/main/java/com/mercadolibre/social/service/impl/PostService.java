@@ -7,7 +7,6 @@ import com.mercadolibre.social.entity.Post;
 import com.mercadolibre.social.entity.Product;
 import com.mercadolibre.social.entity.User;
 import com.mercadolibre.social.exception.BadRequestException;
-import com.mercadolibre.social.exception.NotFoundException;
 import com.mercadolibre.social.repository.IPostRepository;
 import com.mercadolibre.social.repository.IProductRepository;
 import com.mercadolibre.social.repository.IUserRepository;
@@ -15,11 +14,8 @@ import com.mercadolibre.social.service.IPostService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.List;
-import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
-import java.util.Objects;
-import java.util.ListResourceBundle;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -42,25 +38,6 @@ public class PostService implements IPostService {
         // Se valida si el usuario ingresado existe en el sistema
         userRepository.findById(postRequestDTO.getUserId());
 
-        // Se valida que el producto ingresado sea correcto
-        Product product = productRepository.findById(postRequestDTO.getProduct().getProductId());
-
-        if (!product.getName().equalsIgnoreCase(postRequestDTO.getProduct().getProductName())) {
-            throw new BadRequestException("The product name is incorrect");
-        }
-        if (!product.getType().equalsIgnoreCase(postRequestDTO.getProduct().getType())) {
-            throw new BadRequestException("The product type is incorrect");
-        }
-        if (!product.getBrand().equalsIgnoreCase(postRequestDTO.getProduct().getBrand())) {
-            throw new BadRequestException("The product brand is incorrect");
-        }
-        if (!product.getColor().equalsIgnoreCase(postRequestDTO.getProduct().getColor())) {
-            throw new BadRequestException("The product color is incorrect");
-        }
-        if (!product.getNotes().equalsIgnoreCase(postRequestDTO.getProduct().getNotes())) {
-            throw new BadRequestException("The product notes are incorrect");
-        }
-
         // Crea el objeto Post
         Post post = new Post();
         post.setUserId(postRequestDTO.getUserId());
@@ -70,7 +47,6 @@ public class PostService implements IPostService {
         post.setPrice(postRequestDTO.getPrice());
         post.setHasPromo(false);
         post.setDiscount(0.0);
-
 
         post = postRepository.save(post);
 
@@ -110,38 +86,6 @@ public class PostService implements IPostService {
 
         userRepository.findById(postPromotionRequestDto.getUserId());
 
-        // Se valida que el producto ingresado sea correcto
-        Product product = productRepository.findById(postPromotionRequestDto.getProduct().getProductId());
-
-        // Validación del descuento: debe estar entre 0 y 1 (porcentaje entre 0% y 100%)
-        if (postPromotionRequestDto.getHasPromo() != null && postPromotionRequestDto.getHasPromo() &&
-                (postPromotionRequestDto.getDiscount() == null || postPromotionRequestDto.getDiscount() < 0 || postPromotionRequestDto.getDiscount() > 1)) {
-            throw new BadRequestException("The discount must be between 0 and 1");
-        }
-
-        if (!product.getName().equalsIgnoreCase(postPromotionRequestDto.getProduct().getProductName())) {
-            throw new BadRequestException("The product name is incorrect");
-        }
-        if (!product.getType().equalsIgnoreCase(postPromotionRequestDto.getProduct().getType())) {
-            throw new BadRequestException("The product type is incorrect");
-        }
-        if (!product.getBrand().equalsIgnoreCase(postPromotionRequestDto.getProduct().getBrand())) {
-            throw new BadRequestException("The product brand is incorrect");
-        }
-        if (!product.getColor().equalsIgnoreCase(postPromotionRequestDto.getProduct().getColor())) {
-            throw new BadRequestException("The product color is incorrect");
-        }
-        if (!Objects.equals(product.getNotes(), postPromotionRequestDto.getProduct().getNotes())) {
-            throw new BadRequestException("The product notes are incorrect");
-        }
-        // Validar que los demás campos tengan valores válidos
-        if (postPromotionRequestDto.getPrice() == null || postPromotionRequestDto.getPrice() <= 0) {
-            throw new BadRequestException("Invalid price value");
-        }
-        if (postPromotionRequestDto.getCategory() == null || postPromotionRequestDto.getCategory() <= 0) {
-            throw new BadRequestException("Invalid category value");
-        }
-
         // Crea el objeto Post
         LocalDate date = postPromotionRequestDto.getDate();
         Post post = new Post();
@@ -163,7 +107,7 @@ public class PostService implements IPostService {
         // Verifica que el usuario existe
         User user = userRepository.findById(userId);
 
-        // Obtén los IDs de los usuarios seguidos
+        // Obtén los ID de los usuarios seguidos
         Set<Integer> followedUsers = user.getFollowed();
 
         // Filtra las publicaciones realizadas por los usuarios seguidos
@@ -172,23 +116,29 @@ public class PostService implements IPostService {
                 .filter(post -> post.getDate().isAfter(LocalDate.now().minusWeeks(2))) // Últimas dos semanas
                 .toList();
 
-        List<Post> orderedPosts;
+        List<Post> orderedPost;
 
-        if(order.equalsIgnoreCase("date_asc")) {
-            orderedPosts = filteredPosts
-                    .stream()
-                    .sorted(Comparator.comparing(Post::getDate))
-                    .toList();
-        } else { // date_desc
-            orderedPosts = filteredPosts
-                    .stream()
-                    .sorted(Comparator.comparing(Post::getDate).reversed())
-                    .toList();
+        if (order != null) {
+            if (order.equalsIgnoreCase("date_asc")) {
+                orderedPost = filteredPosts
+                        .stream()
+                        .sorted(Comparator.comparing(Post::getDate))
+                        .toList();
+            } else if (order.equalsIgnoreCase("date_desc")) {
+                orderedPost = filteredPosts
+                        .stream()
+                        .sorted(Comparator.comparing(Post::getDate).reversed())
+                        .toList();
+            } else {
+                throw new BadRequestException("Parametro no valido, debe ingresar 'name_desc' o 'name_asc' para que sea valido");
+            }
+        } else {
+            orderedPost = filteredPosts;
         }
 
 
         // Mapea las publicaciones a PostDetailsDTO
-        List<PostDetailsDTO> posts = orderedPosts.stream()
+        List<PostDetailsDTO> posts = orderedPost.stream()
                 .map(post -> {
                     Product product = productRepository.findById(post.getProductId());
                     return new PostDetailsDTO(

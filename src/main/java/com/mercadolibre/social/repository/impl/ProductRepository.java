@@ -7,27 +7,16 @@ import com.mercadolibre.social.exception.NotFoundException;
 import com.mercadolibre.social.repository.IProductRepository;
 import org.springframework.stereotype.Repository;
 
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 @Repository
 public class ProductRepository implements IProductRepository {
-    private List<Product> products;
+    private final List<Product> products;
 
     public ProductRepository() throws IOException {
         products = loadDataBase();
-    }
-
-    @Override
-    public List<Product> findAll() {
-        return products;
-    }
-
-    @Override
-    public Product save(Product product) {
-        products.add(product);
-        return product;
     }
 
     @Override
@@ -44,17 +33,19 @@ public class ProductRepository implements IProductRepository {
             return List.copyOf(products);
         }
         return products.stream().filter(product ->
-                    (product.getName() != null && product.getName().trim().toLowerCase().contains(query.toLowerCase())
-                   || (product.getNotes() != null && product.getNotes().trim().toLowerCase().contains(query.toLowerCase()))
-                            || (product.getBrand() != null && product.getBrand().trim().toLowerCase().contains(query.toLowerCase())))
+                (product.getName() != null && product.getName().trim().toLowerCase().contains(query.toLowerCase())
+                        || (product.getNotes() != null && product.getNotes().trim().toLowerCase().contains(query.toLowerCase()))
+                        || (product.getBrand() != null && product.getBrand().trim().toLowerCase().contains(query.toLowerCase())))
         ).toList();
     }
 
     private List<Product> loadDataBase() throws IOException {
-        String FILE_PATH = "src/main/resources/products.json";
         ObjectMapper objectMapper = new ObjectMapper();
-        try (FileInputStream inputStream = new FileInputStream(FILE_PATH)) {
-            return objectMapper.readValue(inputStream, new TypeReference<List<Product>>() {
+        try (InputStream inputStream = getClass().getResourceAsStream("/products.json")) {
+            if (inputStream == null) {
+                throw new IOException("El archivo JSON no se encontró: " + "/products.json");
+            }
+            return objectMapper.readValue(inputStream, new TypeReference<>() {
             });
         }
     }

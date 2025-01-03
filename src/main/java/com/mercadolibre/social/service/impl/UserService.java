@@ -1,11 +1,10 @@
 package com.mercadolibre.social.service.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mercadolibre.social.dto.response.*;
 import com.mercadolibre.social.entity.User;
+import com.mercadolibre.social.exception.BadRequestException;
 import com.mercadolibre.social.exception.ConflictException;
 import com.mercadolibre.social.exception.IllegalOperationException;
-import com.mercadolibre.social.exception.InvalidFormatException;
 import com.mercadolibre.social.repository.IUserRepository;
 import com.mercadolibre.social.service.IUserService;
 import org.springframework.stereotype.Service;
@@ -19,15 +18,12 @@ public class UserService implements IUserService {
 
     private final IUserRepository userRepository;
 
-    public UserService(IUserRepository userRepository, ObjectMapper objectMapper) {
+    public UserService(IUserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
     @Override
     public FollowUserResponseDto followUser(int userId, int userIdToFollow) {
-        if (userId <= 0 || userIdToFollow <= 0) {
-            throw new InvalidFormatException("Id is invalid.");
-        }
         User user = userRepository.findById(userId);
         Optional<Integer> isFollowed = user.getFollowed().stream()
                 .filter(userFollowedId -> userFollowedId.equals(userIdToFollow))
@@ -52,7 +48,9 @@ public class UserService implements IUserService {
 
         User user = userRepository.findById(id);
         List<User> followers = userRepository.findUsersByIds(user.getFollowers());
-        orderByUserName(followers, order);
+        if (order != null) {
+            orderByUserName(followers, order);
+        }
 
         return new FollowersByUserDto(
                 user.getId(),
@@ -87,7 +85,9 @@ public class UserService implements IUserService {
 
         User user = userRepository.findById(id);
         List<User> followed = userRepository.findUsersByIds(user.getFollowed());
-        orderByUserName(followed, order);
+        if (order != null) {
+            orderByUserName(followed, order);
+        }
 
         return new FollowedByUserDto(
                 user.getId(),
@@ -112,8 +112,10 @@ public class UserService implements IUserService {
     private void orderByUserName(List<User> users, String order) {
         if (order.equalsIgnoreCase("name_desc")) {
             users.sort(Comparator.comparing(User::getUsername).reversed());
-        } else {
+        } else if (order.equalsIgnoreCase("name_asc")) {
             users.sort(Comparator.comparing(User::getUsername));
+        } else {
+            throw new BadRequestException("Parametro no valido, debe ingresar 'name_desc' o 'name_asc' para que sea valido");
         }
     }
 }
