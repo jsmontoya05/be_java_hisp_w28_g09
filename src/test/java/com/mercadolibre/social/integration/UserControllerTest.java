@@ -1,10 +1,7 @@
 package com.mercadolibre.social.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mercadolibre.social.dto.response.FollowUserResponseDto;
-import com.mercadolibre.social.dto.response.FollowersByUserDto;
-import com.mercadolibre.social.dto.response.UserCountFollowersDto;
-import com.mercadolibre.social.dto.response.UserDto;
+import com.mercadolibre.social.dto.response.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +26,6 @@ class UserControllerTest {
     MockMvc mockMvc;
 
     ObjectMapper objectMapper = new ObjectMapper();
-
 
     @Test
     @DisplayName("IT-01: Validar acción de “Follow” (seguir) a un determinado usuario")
@@ -107,6 +103,24 @@ class UserControllerTest {
                 .andExpect(statusEsperado)
                 .andExpect(contentTypeEsperado)
                 .andExpect(bodyEsperado)
+                .andDo(print());
+
+    }
+
+    @Test
+    @DisplayName("IT-03 -> US-07: Poder realizar la acción de “Unfollow” (dejar de seguir) a un determinado vendedor.")
+    public void givenUser_whenUnFollow_thenReturnCorrectMessage() throws Exception {
+        //ARRANGE
+        int userId = 1;
+        int userIdToUnfollow = 3;
+        MessageDto expected = new MessageDto("User " + userId + " successfully unfollowed User " + userIdToUnfollow);
+        ResultMatcher statusExpected = status().isOk();
+        ResultMatcher contentTypeExpected = content().contentType("application/json");
+        ResultMatcher bodyExpected = content().json(objectMapper.writeValueAsString(expected));
+
+        // ACT & ASSERT
+        mockMvc.perform(post("/users/{userId}/unfollow/{userIdToUnfollow}", userId, userIdToUnfollow))
+                .andExpectAll(statusExpected, contentTypeExpected, bodyExpected)
                 .andDo(print());
 
     }
