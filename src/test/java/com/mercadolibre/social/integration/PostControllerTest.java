@@ -5,11 +5,13 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.mercadolibre.social.dto.request.PostPromotionRequestDto;
 import com.mercadolibre.social.dto.request.ProductDto;
 import com.mercadolibre.social.dto.response.MessageDto;
+import com.mercadolibre.social.dto.response.ProductCountPromoPostDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultMatcher;
 
@@ -20,6 +22,7 @@ import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -66,5 +69,24 @@ class PostControllerTest {
                 .andExpect(contentTypeEsperado)
                 .andExpect(bodyEsperado)
                 .andDo(print());
+    }
+
+    @Test
+    @DisplayName("IT-07 -> US-11: Obtener la cantidad de productos en promoción de un determinado vendedor")
+    public void givenSellerWithPromotionalProducts_whenGetPromotionProductCount_thenReturnCorrectCount() throws Exception {
+        //ARRANGE
+
+        ProductCountPromoPostDto response = new ProductCountPromoPostDto(1, "john_doe_test", 1);
+        ResultMatcher expectedStatus = status().isOk();
+        ResultMatcher expectedContentType = content().contentType(MediaType.APPLICATION_JSON);
+        ResultMatcher expectedBody = content().json(objectMapper.writeValueAsString(response));
+        //ACT AND ASSERT
+        mockMvc.perform(get("/products/promo-post/count")
+                .param("user_id", "1"))
+                .andExpectAll(
+                        expectedStatus,
+                        expectedContentType,
+                        expectedBody
+                ).andDo(print());
     }
 }
