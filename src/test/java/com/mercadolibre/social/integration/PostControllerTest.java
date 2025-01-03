@@ -3,6 +3,7 @@ package com.mercadolibre.social.integration;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.mercadolibre.social.dto.request.PostPromotionRequestDto;
+import com.mercadolibre.social.dto.request.PostRequestDto;
 import com.mercadolibre.social.dto.request.ProductDto;
 import com.mercadolibre.social.dto.response.MessageDto;
 import org.junit.jupiter.api.DisplayName;
@@ -77,14 +78,12 @@ class PostControllerTest {
         MessageDto messageDto = new MessageDto("The post with id 100 has been created correctly");
         ProductDto productDto = new ProductDto(100, "productName", "type", "brand", "color", "notes");
 
-        PostPromotionRequestDto postPromotionRequestDto = new PostPromotionRequestDto(
+        PostRequestDto postRequestDto = new PostRequestDto(
                 1,
                 currentDate,
                 productDto,
                 1,
-                10.00,
-                false,
-                0.0
+                10.00
         );
 
 
@@ -97,7 +96,7 @@ class PostControllerTest {
         // ACT & ASSERT
         mockMvc.perform(post("/products/post")
                         .contentType("application/json")
-                        .content(objectMapper.writeValueAsString(postPromotionRequestDto)))
+                        .content(objectMapper.writeValueAsString(postRequestDto)))
                 .andExpect(statusEsperado)
                 .andExpect(contentTypeEsperado)
                 .andExpect(bodyEsperado)
