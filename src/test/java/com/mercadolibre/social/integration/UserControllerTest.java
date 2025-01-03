@@ -68,6 +68,29 @@ class UserControllerTest {
                 ).andDo(print());
     }
 
+    @Test
+    @DisplayName("IT-01: Validar acción de “Follow” (seguir) a un usuario que no existe")
+    public void givenUser_whenFollowAnotherUser_thenUserNotFound() throws Exception {
+        // ARRANGE
+
+        // Parametro del seguidor
+        Integer followerParam = 100;
+        // Parametro del seguido
+        Integer followedParam = 2;
+        ExceptionDto response = new ExceptionDto("User not found with ID: " + followerParam);
+        ResultMatcher expectedStatus = status().isNotFound();
+        ResultMatcher expectedContentType = content().contentType(MediaType.APPLICATION_JSON);
+        ResultMatcher expectedBody = content().json(objectMapper.writeValueAsString(response));
+
+
+        // ACT AND ASSERT
+        mockMvc.perform(post("/users/{paramFollower}/follow/{followerParam}", followerParam, followedParam))
+                .andExpectAll(
+                        expectedStatus,
+                        expectedContentType,
+                        expectedBody
+                ).andDo(print());
+    }
 
     @Test
     @DisplayName("IT-04: Validar listado de todos los vendedores a los cuales sigue un determinado usuario.")
