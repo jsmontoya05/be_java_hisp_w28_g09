@@ -15,12 +15,8 @@ import com.mercadolibre.social.service.IPostService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.*;
 import java.time.format.DateTimeFormatter;
-import java.util.Comparator;
-import java.util.Objects;
-import java.util.ListResourceBundle;
-import java.util.Set;
 
 @Service
 public class PostService implements IPostService {
@@ -120,24 +116,29 @@ public class PostService implements IPostService {
                 .filter(post -> post.getDate().isAfter(LocalDate.now().minusWeeks(2))) // Últimas dos semanas
                 .toList();
 
+        List<Post> orderedPost;
 
         if (order != null) {
             if(order.equalsIgnoreCase("date_asc")) {
-                filteredPosts
+                orderedPost = filteredPosts
                         .stream()
-                        .sorted(Comparator.comparing(Post::getDate));
+                        .sorted(Comparator.comparing(Post::getDate))
+                        .toList();
             } else if(order.equalsIgnoreCase("date_desc")) {
-                filteredPosts
+                orderedPost = filteredPosts
                         .stream()
-                        .sorted(Comparator.comparing(Post::getDate).reversed());
+                        .sorted(Comparator.comparing(Post::getDate).reversed())
+                        .toList();
             } else {
                 throw new BadRequestException("Parametro no valido, debe ingresar 'name_desc' o 'name_asc' para que sea valido");
             }
+        } else {
+            orderedPost = filteredPosts;
         }
 
 
         // Mapea las publicaciones a PostDetailsDTO
-        List<PostDetailsDTO> posts = filteredPosts.stream()
+        List<PostDetailsDTO> posts = orderedPost.stream()
                 .map(post -> {
                     Product product = productRepository.findById(post.getProductId());
                     return new PostDetailsDTO(
