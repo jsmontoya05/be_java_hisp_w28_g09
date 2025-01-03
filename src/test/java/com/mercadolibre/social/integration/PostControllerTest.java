@@ -5,20 +5,26 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.mercadolibre.social.dto.request.PostPromotionRequestDto;
 import com.mercadolibre.social.dto.request.PostRequestDto;
 import com.mercadolibre.social.dto.request.ProductDto;
-import com.mercadolibre.social.dto.response.MessageDto;
+import com.mercadolibre.social.dto.response.*;
+import net.bytebuddy.asm.Advice;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultMatcher;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -105,5 +111,37 @@ class PostControllerTest {
                 .andDo(print());
     }
 
+    @Test
+    @Order(3)
+    @DisplayName("IT-09 -> US-06: Obtener un listado de las publicaciones realizadas por los vendedores que un usuario sigue en las últimas dos semanas")
+    void givenUserId_whenGetPostsByFollowedUsers_thenReturnCorrectPostDetailsDTO() throws Exception{
+        // ARRANGE
+        objectMapper.registerModule(new JavaTimeModule());
+
+        int userId = 1;
+        LocalDate date1 = LocalDate.parse("30-12-2024", DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+        ProductResponseDTO productResponseDTO1 = new ProductResponseDTO(3, "Sony WH-1000XM4", "Headphones", "Sony", "Black", "Noise-canceling, premium sound.");
+        PostDetailsDTO postDetailsDTO1 = new PostDetailsDTO(3,3,date1,productResponseDTO1, 3,350.00);
+
+        LocalDate date2 = LocalDate.parse("29-12-2024", DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+        ProductResponseDTO productResponseDTO2 = new ProductResponseDTO(6, "Bose QuietComfort 35 II", "Headphones", "Bose", "Silver", "Premium noise-canceling headphones.");
+        PostDetailsDTO postDetailsDTO2 = new PostDetailsDTO(3,6,date2,productResponseDTO2, 3,350.00);
+
+        List<PostDetailsDTO> posts = new ArrayList<>(Arrays.asList(
+            postDetailsDTO1, postDetailsDTO2)
+        );
+
+        UserPostsResponseDTO userPostsResponseDTO = new UserPostsResponseDTO(userId, posts);
+
+        ResultMatcher expectedStatus = status().isOk();
+        ResultMatcher expectedContentType = content().contentType(MediaType.APPLICATION_JSON);
+        ResultMatcher expectedBody = content().json(objectMapper.writeValueAsString(userPostsResponseDTO));
+
+        // ACT & ASSERT
+        mockMvc.perform(get("/products/followed/{userId}/list", userId))
+                .andExpectAll(expectedStatus, expectedContentType, expectedBody)
+                .andDo(print());
+
+    }
 
 }
