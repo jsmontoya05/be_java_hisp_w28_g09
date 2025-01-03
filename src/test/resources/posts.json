@@ -22,7 +22,7 @@
   {
     "id": 3,
     "userId": 3,
-    "date": "03-11-2024",
+    "date": "30-12-2024",
     "productId": 3,
     "category": 3,
     "price": 350.00,
@@ -32,7 +32,7 @@
   {
     "id": 4,
     "userId": 1,
-    "date": "04-11-2024",
+    "date": "29-12-2024",
     "productId": 4,
     "category": 4,
     "price": 299.99,
@@ -52,7 +52,7 @@
   {
     "id": 6,
     "userId": 3,
-    "date": "06-11-2024",
+    "date": "29-12-2024",
     "productId": 6,
     "category": 3,
     "price": 350.00,
