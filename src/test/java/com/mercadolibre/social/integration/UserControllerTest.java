@@ -117,7 +117,7 @@ class UserControllerTest {
     public void givenUser_whenUnFollow_thenReturnCorrectMessage() throws Exception {
         //ARRANGE
         int userId = 1;
-        int userIdToUnfollow = 3;
+        int userIdToUnfollow = 4;
         MessageDto expected = new MessageDto("User " + userId + " successfully unfollowed User " + userIdToUnfollow);
         ResultMatcher statusExpected = status().isOk();
         ResultMatcher contentTypeExpected = content().contentType("application/json");
