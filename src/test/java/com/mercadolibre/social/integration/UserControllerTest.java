@@ -32,7 +32,7 @@ class UserControllerTest {
     ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
-    @DisplayName("IT-04: Validar listado de todos los vendedores a los cuales sigue un determinado usuario.")
+    @DisplayName("IT-04 -> US-04: Validar listado de todos los vendedores a los cuales sigue un determinado usuario.")
     public void givenUser_whenFetchFollowedSellers_thenReturnSellerList() throws Exception {
         // ARRANGE
 
