@@ -61,10 +61,48 @@ class PostControllerTest {
         // ACT & ASSERT
         mockMvc.perform(post("/products/promo-post")
                         .contentType("application/json")
-                        .content(objectMapper.writeValueAsString(postPromotionRequestDto))) // Usar ObjectMapper configurado
+                        .content(objectMapper.writeValueAsString(postPromotionRequestDto)))
                 .andExpect(statusEsperado)
                 .andExpect(contentTypeEsperado)
                 .andExpect(bodyEsperado)
                 .andDo(print());
     }
+
+    @Test
+    @DisplayName("IT-06 -> US-05 Dar de alta una nueva publicación")
+    public void givenPostRequestDto_whenPost_thenSuccess() throws Exception {
+        // ARRANGE
+        LocalDate currentDate = LocalDate.now();
+
+        MessageDto messageDto = new MessageDto("The post with id 100 has been created correctly");
+        ProductDto productDto = new ProductDto(100, "productName", "type", "brand", "color", "notes");
+
+        PostPromotionRequestDto postPromotionRequestDto = new PostPromotionRequestDto(
+                1,
+                currentDate,
+                productDto,
+                1,
+                10.00,
+                false,
+                0.0
+        );
+
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+
+        ResultMatcher statusEsperado = status().isOk();
+        ResultMatcher contentTypeEsperado = content().contentType("application/json");
+        ResultMatcher bodyEsperado = content().json(objectMapper.writeValueAsString(messageDto));
+        // ACT & ASSERT
+        mockMvc.perform(post("/products/post")
+                        .contentType("application/json")
+                        .content(objectMapper.writeValueAsString(postPromotionRequestDto)))
+                .andExpect(statusEsperado)
+                .andExpect(contentTypeEsperado)
+                .andExpect(bodyEsperado)
+                .andDo(print());
+    }
+
+
 }
