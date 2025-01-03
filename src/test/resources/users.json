@@ -2,7 +2,7 @@
   {
     "id": 1,
     "username": "john_doe_test",
-    "followed": [3],
+    "followed": [3,4],
     "followers": []
   },
   {
@@ -16,5 +16,11 @@
     "username": "bob_jones",
     "followed": [],
     "followers": [2,1]
+  },
+  {
+    "id": 4,
+    "username": "frank_martin",
+    "followed": [],
+    "followers": [1]
   }
 ]
