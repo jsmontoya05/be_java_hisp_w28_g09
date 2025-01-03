@@ -1,6 +1,7 @@
 package com.mercadolibre.social.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mercadolibre.social.dto.response.FollowUserResponseDto;
 import com.mercadolibre.social.dto.response.FollowersByUserDto;
 import com.mercadolibre.social.dto.response.UserCountFollowersDto;
 import com.mercadolibre.social.dto.response.UserDto;
@@ -15,6 +16,7 @@ import org.springframework.test.web.servlet.ResultMatcher;
 
 import java.util.List;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -27,6 +29,32 @@ class UserControllerTest {
     MockMvc mockMvc;
 
     ObjectMapper objectMapper = new ObjectMapper();
+
+
+    @Test
+    @DisplayName("IT-01: Validar acción de “Follow” (seguir) a un determinado usuario")
+    public void givenUser_whenFollowAnotherUser_thenUserIsFollowed() throws Exception {
+        // ARRANGE
+
+        // Parametro del seguidor
+        Integer followerParam = 1;
+        // Parametro del seguido
+        Integer followedParam = 2;
+        FollowUserResponseDto response = new FollowUserResponseDto(followerParam, followedParam);
+        ResultMatcher expectedStatus = status().isOk();
+        ResultMatcher expectedContentType = content().contentType(MediaType.APPLICATION_JSON);
+        ResultMatcher expectedBody = content().json(objectMapper.writeValueAsString(response));
+
+
+        // ACT AND ASSERT
+        mockMvc.perform(post("/users/{paramFollower}/follow/{followerParam}", followerParam, followedParam))
+                .andExpectAll(
+                        expectedStatus,
+                        expectedContentType,
+                        expectedBody
+                ).andDo(print());
+    }
+
 
 
     @Test
