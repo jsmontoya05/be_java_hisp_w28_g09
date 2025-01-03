@@ -62,7 +62,7 @@ class UserControllerTest {
     }
 
     @Test
-    @DisplayName("IT-01: Validar acción de “Follow” (seguir) a un determinado usuario")
+    @DisplayName("IT-01 -> US-01: Validar acción de “Follow” (seguir) a un determinado usuario")
     public void givenUser_whenFollowAnotherUser_thenUserIsFollowed() throws Exception {
         // ARRANGE
 
