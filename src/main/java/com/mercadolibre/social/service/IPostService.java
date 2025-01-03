@@ -7,7 +7,6 @@ import com.mercadolibre.social.dto.response.ProductCountPromoPostDto;
 import com.mercadolibre.social.dto.response.UserPostsResponseDTO;
 
 
-
 public interface IPostService {
     MessageDto createPost(PostRequestDto postRequestDTO);
 

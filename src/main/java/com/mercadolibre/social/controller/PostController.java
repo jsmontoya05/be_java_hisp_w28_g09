@@ -24,7 +24,7 @@ public class PostController {
 
     // 11. Obtener la cantidad de productos en promoción de un determinado vendedor ?user_id={userId}
     @GetMapping("/products/promo-post/count")
-    public ResponseEntity<?> getCountPromoPost(@RequestParam("user_id") int userId){
+    public ResponseEntity<?> getCountPromoPost(@RequestParam("user_id") int userId) {
         return new ResponseEntity<>(postService.getCountPromoPost(userId), HttpStatus.OK);
     }
 
@@ -32,6 +32,7 @@ public class PostController {
     public ResponseEntity<?> createPostPromotion(@RequestBody @Valid PostPromotionRequestDto postPromotionRequestDto) {
         return new ResponseEntity<>(postService.createPostPromotion(postPromotionRequestDto), HttpStatus.OK);
     }
+
     @GetMapping("/products/followed/{userId}/list")
     public ResponseEntity<?> getPostsByFollowedUsers(@PathVariable Integer userId,
                                                      @RequestParam(value = "order", required = false) String order) {

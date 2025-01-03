@@ -3,7 +3,10 @@ package com.mercadolibre.social.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -29,7 +32,7 @@ public class PostPromotionRequestDto {
     private Double price;
     @JsonProperty("has_promo")
     private Boolean hasPromo;
-    @DecimalMin(value = "0.0", inclusive = true, message = "El valor del discount no puede ser menor que 0")
-    @DecimalMax(value = "1.0", inclusive = true, message = "El valor del discount no puede ser mayor que 1")
+    @DecimalMin(value = "0.0", message = "El valor del discount no puede ser menor que 0")
+    @DecimalMax(value = "1.0", message = "El valor del discount no puede ser mayor que 1")
     private Double discount;
 }

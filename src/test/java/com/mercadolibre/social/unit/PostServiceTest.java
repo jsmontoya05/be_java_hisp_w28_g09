@@ -1,6 +1,5 @@
 package com.mercadolibre.social.unit;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mercadolibre.social.dto.response.PostDetailsDTO;
 import com.mercadolibre.social.dto.response.ProductResponseDTO;
 import com.mercadolibre.social.dto.response.UserPostsResponseDTO;
@@ -20,6 +19,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
@@ -30,132 +30,130 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class PostServiceTest {
-        @Mock
-        private PostRepository postRepository;
+    @Mock
+    private PostRepository postRepository;
 
-        @Mock
-        private UserRepository userRepository;
+    @Mock
+    private UserRepository userRepository;
 
-        @Mock
-        private ProductRepository productRepository;
+    @Mock
+    private ProductRepository productRepository;
 
-        @InjectMocks
-        private PostService postService;
+    @InjectMocks
+    private PostService postService;
 
-        ObjectMapper objectMapper = new ObjectMapper();
+    @Test
+    @DisplayName("UT-05: Verificar que el tipo de ordenamiento por fecha exista")
+    void givenOrder_whenOrderExists_thenReturnOrderedPosts() {
+        // ARRANGE
+        String order = "date_desc";
+        Integer userId = 1;
+        Integer followedUserId = 2;
 
-        @Test
-        @DisplayName("UT-05: Verificar que el tipo de ordenamiento por fecha exista")
-        void givenOrder_whenOrderExists_thenReturnOrderedPosts() {
-                // ARRANGE
-                String order = "date_desc";
-                Integer userId = 1;
-                Integer followedUserId = 2;
+        User expectedUser = new User(userId, "John Doe", Set.of(followedUserId), Set.of());
+        when(userRepository.findById(expectedUser.getId())).thenReturn(expectedUser);
 
-                User expectedUser = new User(userId, "John Doe", Set.of(followedUserId), Set.of());
-                when(userRepository.findById(expectedUser.getId())).thenReturn(expectedUser);
+        List<Post> expectedPosts = List.of(
+                new Post(1, followedUserId, LocalDate.now(), 1, 1, 10.0, false, 0.0),
+                new Post(2, followedUserId, LocalDate.now().minusDays(1), 2, 1, 10.0, false, 0.0));
+        when(postRepository.findAll()).thenReturn(expectedPosts);
 
-                List<Post> expectedPosts = List.of(
-                                new Post(1, followedUserId, LocalDate.now(), 1, 1, 10.0, false, 0.0),
-                                new Post(2, followedUserId, LocalDate.now().minusDays(1), 2, 1, 10.0, false, 0.0));
-                when(postRepository.findAll()).thenReturn(expectedPosts);
+        Integer productId1 = 1;
+        Integer productId2 = 2;
 
-                Integer productId1 = 1;
-                Integer productId2 = 2;
+        when(productRepository.findById(productId1)).thenReturn(
+                new Product(
+                        1,
+                        "Name",
+                        "Type",
+                        "Brand",
+                        "Color",
+                        "Notes"));
 
-                when(productRepository.findById(productId1)).thenReturn(
-                                new Product(
-                                                1,
-                                                "Name",
-                                                "Type",
-                                                "Brand",
-                                                "Color",
-                                                "Notes"));
+        when(productRepository.findById(productId2)).thenReturn(
+                new Product(
+                        2,
+                        "Name",
+                        "Type",
+                        "Brand",
+                        "Color",
+                        "Notes"));
 
-                when(productRepository.findById(productId2)).thenReturn(
-                                new Product(
-                                                2,
-                                                "Name",
-                                                "Type",
-                                                "Brand",
-                                                "Color",
-                                                "Notes"));
+        List<PostDetailsDTO> expectedPostDetailsDTO = List.of(
+                new PostDetailsDTO(
+                        followedUserId,
+                        1,
+                        LocalDate.now(),
+                        new ProductResponseDTO(
+                                1,
+                                "Name",
+                                "Type",
+                                "Brand",
+                                "Color",
+                                "Notes"),
+                        1,
+                        10.0
 
-                List<PostDetailsDTO> expectedPostDetailsDTO = List.of(
-                                new PostDetailsDTO(
-                                                followedUserId,
-                                                1,
-                                                LocalDate.now(),
-                                                new ProductResponseDTO(
-                                                                1,
-                                                                "Name",
-                                                                "Type",
-                                                                "Brand",
-                                                                "Color",
-                                                                "Notes"),
-                                                1,
-                                                10.0
+                ),
+                new PostDetailsDTO(
+                        followedUserId,
+                        2,
+                        LocalDate.now().minusDays(1),
+                        new ProductResponseDTO(
+                                2,
+                                "Name",
+                                "Type",
+                                "Brand",
+                                "Color",
+                                "Notes"),
+                        1,
+                        10.0
 
-                                ),
-                                new PostDetailsDTO(
-                                                followedUserId,
-                                                2,
-                                                LocalDate.now().minusDays(1),
-                                                new ProductResponseDTO(
-                                                                2,
-                                                                "Name",
-                                                                "Type",
-                                                                "Brand",
-                                                                "Color",
-                                                                "Notes"),
-                                                1,
-                                                10.0
+                ));
 
-                                ));
+        UserPostsResponseDTO expectedPostsResponseDTO = new UserPostsResponseDTO(expectedUser.getId(),
+                expectedPostDetailsDTO);
 
-                UserPostsResponseDTO expectedPostsResponseDTO = new UserPostsResponseDTO(expectedUser.getId(),
-                                expectedPostDetailsDTO);
+        // ACT
+        UserPostsResponseDTO actualPostsResponseDTO = postService.getPostsByFollowedUsers(expectedUser.getId(),
+                order);
 
-                // ACT
-                UserPostsResponseDTO actualPostsResponseDTO = postService.getPostsByFollowedUsers(expectedUser.getId(),
-                                order);
+        // ASSERT
+        assertEquals(expectedPostsResponseDTO, actualPostsResponseDTO);
 
-                // ASSERT
-                assertEquals(expectedPostsResponseDTO, actualPostsResponseDTO);
+    }
 
-        }
+    @Test
+    @DisplayName("UT-05: Verificar que si no existe orden, lanza una excepción")
+    void givenOrder_whenOrderNotExists_thenThrowException() {
+        // ARRANGE
+        String order = "";
+        Integer userId = 1;
+        Integer followedUserId = 2;
 
-        @Test
-        @DisplayName("UT-05: Verificar que si no existe orden, lanza una excepción")
-        void givenOrder_whenOrderNotExists_thenThrowException() {
-                // ARRANGE
-                String order = "";
-                Integer userId = 1;
-                Integer followedUserId = 2;
+        User expectedUser = new User(userId, "John Doe", Set.of(followedUserId), Set.of());
+        when(userRepository.findById(expectedUser.getId())).thenReturn(expectedUser);
 
-                User expectedUser = new User(userId, "John Doe", Set.of(followedUserId), Set.of());
-                when(userRepository.findById(expectedUser.getId())).thenReturn(expectedUser);
+        List<Post> expectedPosts = List.of(
+                new Post(1, followedUserId, LocalDate.now(), 1, 1, 10.0, false, 0.0),
+                new Post(2, followedUserId, LocalDate.now().minusDays(1), 2, 1, 10.0, false, 0.0));
+        when(postRepository.findAll()).thenReturn(expectedPosts);
 
-                List<Post> expectedPosts = List.of(
-                                new Post(1, followedUserId, LocalDate.now(), 1, 1, 10.0, false, 0.0),
-                                new Post(2, followedUserId, LocalDate.now().minusDays(1), 2, 1, 10.0, false, 0.0));
-                when(postRepository.findAll()).thenReturn(expectedPosts);
+        String messageExpected = "Parametro no valido, debe ingresar 'name_desc' o 'name_asc' para que sea valido";
 
-                String messageExpected = "Parametro no valido, debe ingresar 'name_desc' o 'name_asc' para que sea valido";
+        // ACT & ASSERT
+        Exception exception = assertThrows(
+                BadRequestException.class,
+                () -> postService.getPostsByFollowedUsers(expectedUser.getId(), order));
 
-                // ACT & ASSERT
-                Exception exception = assertThrows(
-                                BadRequestException.class,
-                                () -> postService.getPostsByFollowedUsers(expectedUser.getId(), order));
+        // ASSERT
+        assertEquals(messageExpected, exception.getMessage());
 
-                // ASSERT
-                assertEquals(messageExpected, exception.getMessage());
-
-        }
+    }
 
     @Test
     @DisplayName("UT-08: Verificar que la consulta de publicaciones realizadas en las últimas dos semanas de un determinado vendedor sean efectivamente de las últimas dos semanas.")
-    public void givenSeller_whenQueryRecentPosts_thenReturnsPostsFromLastTwoWeeks(){
+    public void givenSeller_whenQueryRecentPosts_thenReturnsPostsFromLastTwoWeeks() {
         // ARRANGE
         List<Post> posts = List.of(
                 new Post(
@@ -193,81 +191,31 @@ class PostServiceTest {
         List<Product> products = List.of(
                 new Product(
                         1,
-                                        "Laptop Dell XPS 13",
-                                        "Electronics",
-                                        "Dell",
-                                        "Silver",
-                                        "High performance, ultra-portable laptop."
+                        "Laptop Dell XPS 13",
+                        "Electronics",
+                        "Dell",
+                        "Silver",
+                        "High performance, ultra-portable laptop."
 
                 ),
                 new Product(
                         2,
-                                        "Samsung Galaxy S21",
-                                        "Phone",
-                                        "Samsung",
-                                        "Phantom Black",
-                                        "Latest model with top-tier camera."
+                        "Samsung Galaxy S21",
+                        "Phone",
+                        "Samsung",
+                        "Phantom Black",
+                        "Latest model with top-tier camera."
                 ),
                 new Product(
                         3,
-                                        "Sony WH-1000XM4",
-                                        "Headphones",
-                                        "Sony",
-                                        "Black",
-                                        "Noise-canceling, premium sound."
+                        "Sony WH-1000XM4",
+                        "Headphones",
+                        "Sony",
+                        "Black",
+                        "Noise-canceling, premium sound."
                 )
         );
 
-        UserPostsResponseDTO expectedResponse = new UserPostsResponseDTO(
-                1,
-                List.of(
-                        new PostDetailsDTO(
-                                posts.get(0).getUserId(),
-                                posts.get(0).getId(),
-                                posts.get(0).getDate(),
-                                new ProductResponseDTO(
-                                        products.get(0).getId(),
-                                        products.get(0).getName(),
-                                        products.get(0).getType(),
-                                        products.get(0).getBrand(),
-                                        products.get(0).getColor(),
-                                        products.get(0).getNotes()
-                                ),
-                                posts.get(0).getCategory(),
-                                posts.get(0).getPrice()
-                        ),
-                        new PostDetailsDTO(
-                                posts.get(1).getUserId(),
-                                posts.get(1).getId(),
-                                posts.get(1).getDate(),
-                                new ProductResponseDTO(
-                                        products.get(1).getId(),
-                                        products.get(1).getName(),
-                                        products.get(1).getType(),
-                                        products.get(1).getBrand(),
-                                        products.get(1).getColor(),
-                                        products.get(1).getNotes()
-                                ),
-                                posts.get(1).getCategory(),
-                                posts.get(1).getPrice()
-                        ),
-                        new PostDetailsDTO(
-                                posts.get(2).getUserId(),
-                                posts.get(2).getId(),
-                                posts.get(2).getDate(),
-                                new ProductResponseDTO(
-                                        products.get(2).getId(),
-                                        products.get(2).getName(),
-                                        products.get(2).getType(),
-                                        products.get(2).getBrand(),
-                                        products.get(2).getColor(),
-                                        products.get(2).getNotes()
-                                ),
-                                posts.get(2).getCategory(),
-                                posts.get(2).getPrice()
-                        )
-                )
-        );
         Integer paramUserId = 1;
         User userMock = new User(1, "john_doe_test", new HashSet<>(Set.of(3)), new HashSet<>());
         LocalDate twoWeeksAgo = LocalDate.now().minusWeeks(2);
@@ -286,12 +234,12 @@ class PostServiceTest {
                             assertFalse(post.getDate().isBefore(twoWeeksAgo), "La publicacion con el ID: " + post.getPostId() + " tiene una fecha anterior a hace dos semanas: " + post.getDate());
                         }
                 )
-                );
+        );
     }
 
     @Test
     @DisplayName("UT-06: Verificar el correcto ordenamiento ascendente por fecha")
-    void givenUser_whenGetPostsByFollowedUsersAsc_thenReturnUserPostsResponseDTOSortedByDateAsc(){
+    void givenUser_whenGetPostsByFollowedUsersAsc_thenReturnUserPostsResponseDTOSortedByDateAsc() {
         //Arrange
         int id = 1;
         int followedUserId = 2;
@@ -310,18 +258,18 @@ class PostServiceTest {
         int productId2 = 2;
 
         when(productRepository.findById(productId1)).thenReturn(
-                new Product(1,"Product 1","Type","Brand","Color","Notes"));
+                new Product(1, "Product 1", "Type", "Brand", "Color", "Notes"));
 
         when(productRepository.findById(productId2)).thenReturn(
-                new Product(2,"Product 2","Type","Brand","Color","Notes"));
+                new Product(2, "Product 2", "Type", "Brand", "Color", "Notes"));
 
         List<PostDetailsDTO> expectedPostDetailsDTO = List.of(
-                new PostDetailsDTO(followedUserId,1,LocalDate.now(),
-                        new ProductResponseDTO(1,"Product 1","Type","Brand","Color","Notes"),
-                        1,10.0 ),
-                new PostDetailsDTO(followedUserId,2,LocalDate.now().minusDays(1),
-                        new ProductResponseDTO(2,"Product 2","Type","Brand","Color","Notes"),
-                        1,10.0));
+                new PostDetailsDTO(followedUserId, 1, LocalDate.now(),
+                        new ProductResponseDTO(1, "Product 1", "Type", "Brand", "Color", "Notes"),
+                        1, 10.0),
+                new PostDetailsDTO(followedUserId, 2, LocalDate.now().minusDays(1),
+                        new ProductResponseDTO(2, "Product 2", "Type", "Brand", "Color", "Notes"),
+                        1, 10.0));
 
         UserPostsResponseDTO expectedPostsResponseDTO = new UserPostsResponseDTO(expectedUser.getId(), expectedPostDetailsDTO);
 
@@ -343,7 +291,7 @@ class PostServiceTest {
 
     @Test
     @DisplayName("UT-06: Verificar el correcto ordenamiento descendente por fecha")
-    void givenUser_whenGetPostsByFollowedUsersDesc_thenReturnUserPostsResponseDTOSortedByDateDesc(){
+    void givenUser_whenGetPostsByFollowedUsersDesc_thenReturnUserPostsResponseDTOSortedByDateDesc() {
         //Arrange
         int id = 1;
         int followedUserId = 2;
@@ -362,18 +310,18 @@ class PostServiceTest {
         int productId2 = 2;
 
         when(productRepository.findById(productId1)).thenReturn(
-                new Product(1,"Product 1","Type","Brand","Color","Notes"));
+                new Product(1, "Product 1", "Type", "Brand", "Color", "Notes"));
 
         when(productRepository.findById(productId2)).thenReturn(
-                new Product(2,"Product 2","Type","Brand","Color","Notes"));
+                new Product(2, "Product 2", "Type", "Brand", "Color", "Notes"));
 
         List<PostDetailsDTO> expectedPostDetailsDTO = List.of(
-                new PostDetailsDTO(followedUserId,1,LocalDate.now(),
-                        new ProductResponseDTO(1,"Product 1","Type","Brand","Color","Notes"),
-                        1,10.0 ),
-                new PostDetailsDTO(followedUserId,2,LocalDate.now().minusDays(1),
-                        new ProductResponseDTO(2,"Product 2","Type","Brand","Color","Notes"),
-                        1,10.0));
+                new PostDetailsDTO(followedUserId, 1, LocalDate.now(),
+                        new ProductResponseDTO(1, "Product 1", "Type", "Brand", "Color", "Notes"),
+                        1, 10.0),
+                new PostDetailsDTO(followedUserId, 2, LocalDate.now().minusDays(1),
+                        new ProductResponseDTO(2, "Product 2", "Type", "Brand", "Color", "Notes"),
+                        1, 10.0));
 
         UserPostsResponseDTO expectedPostsResponseDTO = new UserPostsResponseDTO(expectedUser.getId(), expectedPostDetailsDTO);
 

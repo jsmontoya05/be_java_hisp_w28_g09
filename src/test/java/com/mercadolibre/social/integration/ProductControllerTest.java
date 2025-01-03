@@ -16,8 +16,6 @@ import org.springframework.test.web.servlet.ResultMatcher;
 import java.time.LocalDate;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -29,8 +27,6 @@ class ProductControllerTest {
     @Autowired
     MockMvc mockMvc;
 
-    ObjectMapper objectMapper = new ObjectMapper();
-
     @Test
     @DisplayName("IT-BONUS -> US-12: Search")
     public void givenQueryAndPriceRange_whenSearchProducts_thenReturnFilteredResults() throws Exception {
@@ -40,7 +36,7 @@ class ProductControllerTest {
 
         List<PostDetailsDTO> response = List.of(
                 new PostDetailsDTO(
-                        1, 
+                        1,
                         10,
                         LocalDate.of(2024, 11, 10),
                         new ProductResponseDTO(
