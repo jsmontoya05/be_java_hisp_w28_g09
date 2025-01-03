@@ -5,6 +5,10 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.mercadolibre.social.dto.request.PostPromotionRequestDto;
 import com.mercadolibre.social.dto.request.PostRequestDto;
 import com.mercadolibre.social.dto.request.ProductDto;
+import com.mercadolibre.social.dto.response.MessageDto;
+import com.mercadolibre.social.dto.response.ProductCountPromoPostDto;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import com.mercadolibre.social.dto.response.*;
 import net.bytebuddy.asm.Advice;
 import org.junit.jupiter.api.*;
@@ -74,6 +78,25 @@ class PostControllerTest {
                 .andExpect(contentTypeEsperado)
                 .andExpect(bodyEsperado)
                 .andDo(print());
+    }
+
+    @Test
+    @DisplayName("IT-07 -> US-11: Obtener la cantidad de productos en promoción de un determinado vendedor")
+    public void givenSellerWithPromotionalProducts_whenGetPromotionProductCount_thenReturnCorrectCount() throws Exception {
+        //ARRANGE
+
+        ProductCountPromoPostDto response = new ProductCountPromoPostDto(1, "john_doe_test", 1);
+        ResultMatcher expectedStatus = status().isOk();
+        ResultMatcher expectedContentType = content().contentType(MediaType.APPLICATION_JSON);
+        ResultMatcher expectedBody = content().json(objectMapper.writeValueAsString(response));
+        //ACT AND ASSERT
+        mockMvc.perform(get("/products/promo-post/count")
+                .param("user_id", "1"))
+                .andExpectAll(
+                        expectedStatus,
+                        expectedContentType,
+                        expectedBody
+                ).andDo(print());
     }
 
     @Test
