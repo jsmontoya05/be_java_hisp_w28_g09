@@ -1,6 +1,13 @@
 package com.mercadolibre.social.integration;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mercadolibre.social.dto.response.FollowedByUserDto;
+import com.mercadolibre.social.dto.response.FollowersByUserDto;
+import com.mercadolibre.social.dto.response.UserCountFollowersDto;
+import com.mercadolibre.social.dto.response.UserDto;
+import com.mercadolibre.social.repository.impl.UserRepository;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import com.mercadolibre.social.dto.response.*;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +17,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultMatcher;
 
+import java.io.IOError;
+import java.io.IOException;
 import java.util.List;
-
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -26,6 +34,14 @@ class UserControllerTest {
     MockMvc mockMvc;
 
     ObjectMapper objectMapper = new ObjectMapper();
+
+    @Autowired
+    UserRepository userRepository;
+
+    @BeforeEach
+    void resetRepository() throws IOException {
+        userRepository.resetRepository();
+    }
 
     @Test
     @Order(1)
@@ -53,6 +69,35 @@ class UserControllerTest {
     }
 
 
+    @Test
+    @DisplayName("IT-04: Validar listado de todos los vendedores a los cuales sigue un determinado usuario.")
+    public void givenUser_whenFetchFollowedSellers_thenReturnSellerList() throws Exception {
+        // ARRANGE
+
+        // Parametro del usuario
+        Integer userParam = 1;
+        FollowedByUserDto response = new FollowedByUserDto(
+                1,
+                "john_doe_test",
+                List.of(
+                        new UserDto(
+                               3,
+                               "bob_jones"
+                        )
+                ));
+        ResultMatcher expectedStatus = status().isOk();
+        ResultMatcher expectedContentType = content().contentType(MediaType.APPLICATION_JSON);
+        ResultMatcher expectedBody = content().json(objectMapper.writeValueAsString(response));
+
+
+        // ACT AND ASSERT
+        mockMvc.perform(get("/users/{userParam}/followed/list", userParam))
+                .andExpectAll(
+                        expectedStatus,
+                        expectedContentType,
+                        expectedBody
+                ).andDo(print());
+    }
 
     @Test
     @Order(2)

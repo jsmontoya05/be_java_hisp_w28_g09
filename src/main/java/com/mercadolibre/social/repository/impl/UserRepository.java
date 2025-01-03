@@ -58,5 +58,8 @@ public class UserRepository implements IUserRepository {
         }
     }
 
+    public void resetRepository() throws IOException{
+        users = loadDataBase();
+    }
 
 }
