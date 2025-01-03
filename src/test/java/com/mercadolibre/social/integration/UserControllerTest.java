@@ -1,6 +1,7 @@
 package com.mercadolibre.social.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mercadolibre.social.dto.response.FollowedByUserDto;
 import com.mercadolibre.social.dto.response.FollowersByUserDto;
 import com.mercadolibre.social.dto.response.UserCountFollowersDto;
 import com.mercadolibre.social.dto.response.UserDto;
@@ -28,6 +29,35 @@ class UserControllerTest {
 
     ObjectMapper objectMapper = new ObjectMapper();
 
+    @Test
+    @DisplayName("IT-04: Validar listado de todos los vendedores a los cuales sigue un determinado usuario.")
+    public void givenUser_whenFetchFollowedSellers_thenReturnSellerList() throws Exception {
+        // ARRANGE
+
+        // Parametro del usuario
+        Integer userParam = 1;
+        FollowedByUserDto response = new FollowedByUserDto(
+                1,
+                "john_doe_test",
+                List.of(
+                        new UserDto(
+                               3,
+                               "bob_jones"
+                        )
+                ));
+        ResultMatcher expectedStatus = status().isOk();
+        ResultMatcher expectedContentType = content().contentType(MediaType.APPLICATION_JSON);
+        ResultMatcher expectedBody = content().json(objectMapper.writeValueAsString(response));
+
+
+        // ACT AND ASSERT
+        mockMvc.perform(get("/users/{userParam}/followed/list", userParam))
+                .andExpectAll(
+                        expectedStatus,
+                        expectedContentType,
+                        expectedBody
+                ).andDo(print());
+    }
 
     @Test
     @DisplayName("IT-05 -> US-02: Obtener el resultado de la cantidad de usuarios que siguen a un determinado vendedor")
